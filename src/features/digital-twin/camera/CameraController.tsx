@@ -27,15 +27,15 @@ export function CameraController() {
     }
   }, [currentPathName, setTransitioning, cameraMode]);
 
-  // Transition for useSpatialStore spatial selection focus
+  // Transition for useSpatialStore spatial selection focus - only in 'focus' mode
   useEffect(() => {
-    if (rigRef.current) {
+    if (rigRef.current && cameraMode === "focus") {
       const posArray = [cameraPosition.x, cameraPosition.y, cameraPosition.z] as const;
       const targetArray = [cameraTarget.x, cameraTarget.y, cameraTarget.z] as const;
       rigRef.current.transitionTo(posArray, targetArray, 1.2);
     }
-  }, [cameraPosition, cameraTarget]);
+  }, [cameraPosition, cameraTarget, cameraMode]);
 
   return <CameraRig ref={rigRef} />;
 }
-
+export default CameraController;

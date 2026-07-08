@@ -9,7 +9,7 @@ export interface LayerConfig {
 export const LAYER_CONFIGS: LayerConfig[] = [
   {
     id: "stadium",
-    name: "Stadium",
+    name: "Stadium Base",
     description: "Main stadium infrastructure and 3D architectural shell",
     defaultActive: true,
     category: "infrastructure",
@@ -33,6 +33,13 @@ export const LAYER_CONFIGS: LayerConfig[] = [
     name: "Points of Interest",
     description: "Operational services (Restrooms, Food, Medical, Elevators, Exits)",
     defaultActive: false,
+    category: "intelligence",
+  },
+  {
+    id: "routes",
+    name: "Active Pathways",
+    description: "Pedestrian routes, accessibility lanes, and emergency egress lines",
+    defaultActive: true,
     category: "intelligence",
   },
   {
