@@ -1,0 +1,351 @@
+/**
+ * Aetheris Global CSS
+ *
+ * This file implements the design token system as CSS custom properties.
+ * All values are sourced directly from DESIGN_TOKENS.md.
+ *
+ * Architecture:
+ * - @layer base: CSS resets and base element styles
+ * - @layer tokens: CSS custom property definitions (design tokens)
+ * - @layer utilities: Utility classes built from tokens
+ *
+ * Rules (DESIGN_TOKENS.md):
+ * - Components never reference raw values.
+ * - Components consume semantic tokens (via var(--token-name)).
+ * - Hardcoded visual values are prohibited.
+ *
+ * Typography (DESIGN_TOKENS.md):
+ * - Primary: Inter
+ * - Monospace: JetBrains Mono
+ * - Fallback: system-ui
+ */
+
+/* ============================================================================
+   GOOGLE FONTS IMPORT
+   Inter and JetBrains Mono — specified in DESIGN_TOKENS.md.
+   Subset to latin for performance.
+   Must come FIRST — @import rules must precede all other rules.
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@import "tailwindcss";
+
+/* ============================================================================
+   CSS CUSTOM PROPERTIES — DESIGN TOKENS
+   Primitive → Semantic → Component layers.
+   All tokens defined here map directly to DESIGN_TOKENS.md.
+   ============================================================================ */
+
+@layer base {
+  :root {
+    /* --- PRIMITIVE COLOR TOKENS --- */
+    /* Neutral palette */
+    --color-neutral-0: hsl(0, 0%, 100%);
+    --color-neutral-50: hsl(210, 40%, 98%);
+    --color-neutral-100: hsl(210, 40%, 96%);
+    --color-neutral-200: hsl(214, 32%, 91%);
+    --color-neutral-300: hsl(213, 27%, 84%);
+    --color-neutral-400: hsl(215, 20%, 65%);
+    --color-neutral-500: hsl(215, 16%, 47%);
+    --color-neutral-600: hsl(215, 19%, 35%);
+    --color-neutral-700: hsl(215, 25%, 27%);
+    --color-neutral-800: hsl(217, 33%, 17%);
+    --color-neutral-900: hsl(222, 47%, 11%);
+    --color-neutral-950: hsl(229, 84%, 5%);
+
+    /* Blue palette */
+    --color-blue-50: hsl(214, 100%, 97%);
+    --color-blue-100: hsl(214, 95%, 93%);
+    --color-blue-300: hsl(212, 96%, 78%);
+    --color-blue-400: hsl(213, 94%, 68%);
+    --color-blue-500: hsl(217, 91%, 60%);
+    --color-blue-600: hsl(221, 83%, 53%);
+
+    /* Green palette */
+    --color-green-400: hsl(142, 69%, 58%);
+    --color-green-500: hsl(142, 71%, 45%);
+    --color-green-600: hsl(142, 76%, 36%);
+
+    /* Amber palette */
+    --color-amber-400: hsl(43, 96%, 56%);
+    --color-amber-500: hsl(38, 92%, 50%);
+    --color-amber-600: hsl(32, 95%, 44%);
+
+    /* Red palette */
+    --color-red-500: hsl(0, 84%, 60%);
+    --color-red-600: hsl(0, 72%, 51%);
+
+    /* --- SEMANTIC SURFACE TOKENS --- */
+    --surface-base: var(--color-neutral-950);
+    --surface-elevated: var(--color-neutral-900);
+    --surface-glass: hsla(222, 47%, 11%, 0.6);
+    --surface-inverse: var(--color-neutral-0);
+    --surface-overlay: hsla(229, 84%, 5%, 0.8);
+
+    /* --- SEMANTIC TEXT TOKENS --- */
+    --text-primary: var(--color-neutral-50);
+    --text-secondary: var(--color-neutral-300);
+    --text-tertiary: var(--color-neutral-400);
+    --text-disabled: var(--color-neutral-500);
+    --text-inverse: var(--color-neutral-950);
+
+    /* --- SEMANTIC BORDER TOKENS --- */
+    --border-default: var(--color-neutral-700);
+    --border-strong: var(--color-neutral-600);
+    --border-subtle: var(--color-neutral-800);
+
+    /* --- SEMANTIC STATE TOKENS --- */
+    --state-success: var(--color-green-500);
+    --state-warning: var(--color-amber-500);
+    --state-danger: var(--color-red-500);
+    --state-info: var(--color-blue-500);
+    --state-neutral: var(--color-neutral-500);
+
+    /* --- SEMANTIC NAVIGATION TOKENS --- */
+    --nav-active: var(--color-blue-500);
+    --nav-hover: var(--color-neutral-800);
+    --nav-selected: hsla(217, 91%, 60%, 0.15);
+
+    /* --- AI TOKENS --- */
+    --ai-recommendation: var(--color-blue-500);
+    --ai-prediction: var(--color-green-500);
+    --ai-insight: var(--color-neutral-400);
+
+    /* --- CROWD INTELLIGENCE TOKENS --- */
+    --crowd-low: var(--color-green-500);
+    --crowd-medium: var(--color-amber-500);
+    --crowd-high: var(--color-amber-600);
+    --crowd-critical: var(--color-red-500);
+
+    /* --- ACCESSIBILITY TOKENS --- */
+    --accessibility-route: var(--color-green-500);
+    --accessibility-wheelchair: var(--color-blue-300);
+    --accessibility-elevator: var(--color-blue-100);
+    --accessibility-assistance: var(--color-amber-500);
+
+    /* --- TRANSPORTATION TOKENS --- */
+    --transport-parking: var(--color-blue-500);
+    --transport-metro: var(--color-green-500);
+    --transport-bus: var(--color-amber-500);
+    --transport-walking: var(--color-neutral-400);
+
+    /* --- TYPOGRAPHY TOKENS --- */
+    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-base: 1rem;    /* 16px */
+    --font-size-lg: 1.125rem;  /* 18px */
+    --font-size-xl: 1.25rem;   /* 20px */
+    --font-size-2xl: 1.5rem;   /* 24px */
+    --font-size-3xl: 1.875rem; /* 30px */
+    --font-size-4xl: 2.25rem;  /* 36px */
+    --font-size-5xl: 3rem;     /* 48px */
+    --font-size-6xl: 3.75rem;  /* 60px */
+
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+
+    --letter-spacing-tighter: -0.05em;
+    --letter-spacing-normal: 0em;
+    --letter-spacing-wide: 0.05em;
+
+    /* --- SPACING TOKENS (8-point grid) --- */
+    --space-0: 0px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+
+    /* --- BORDER RADIUS TOKENS --- */
+    --radius-none: 0px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-3xl: 32px;
+    --radius-full: 9999px;
+
+    /* --- BLUR TOKENS --- */
+    --blur-none: 0px;
+    --blur-sm: 4px;
+    --blur-md: 8px;
+    --blur-lg: 12px;
+    --blur-xl: 16px;
+    --blur-2xl: 24px;
+    --blur-3xl: 32px;
+
+    /* --- MOTION TOKENS --- */
+    --duration-instant: 100ms;
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-moderate: 250ms;
+    --duration-slow: 300ms;
+    --duration-slower: 400ms;
+    --duration-sluggish: 600ms;
+    --duration-cinematic: 800ms;
+
+    --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1.0);
+    --ease-accelerate: cubic-bezier(0.4, 0.0, 1.0, 1.0);
+    --ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1.0);
+    --ease-emphasized: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+
+    /* --- Z-INDEX TOKENS --- */
+    --z-background: -10;
+    --z-surface: 0;
+    --z-content: 10;
+    --z-navigation: 20;
+    --z-overlay: 30;
+    --z-modal: 40;
+    --z-tooltip: 50;
+    --z-notification: 60;
+
+    /* --- ELEVATION TOKENS (box-shadow) --- */
+    --elevation-0: none;
+    --elevation-1: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.4);
+    --elevation-2: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4);
+    --elevation-3: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.4);
+    --elevation-4: 0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.5);
+    --elevation-5: 0 25px 50px -12px rgba(0,0,0,0.6);
+  }
+
+  /* =========================================================================
+     BASE RESETS
+     Minimal, purposeful resets. Accessibility-first approach.
+     ========================================================================= */
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    /* Prevent layout shift from scrollbar appearing */
+    scrollbar-gutter: stable;
+    /* Smooth scroll for anchor links */
+    scroll-behavior: smooth;
+    /* Font size base for rem calculations */
+    font-size: 16px;
+    /* Prevent iOS text size adjustment */
+    -webkit-text-size-adjust: 100%;
+    /* Better font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+  }
+
+  body {
+    /* Design Language: dark, architectural base */
+    background-color: var(--surface-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    /* Prevent content from overflowing horizontally */
+    min-height: 100dvh;
+    /* Support full-height layouts for the Living Digital Twin */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Typography base styles */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: var(--line-height-tight);
+    color: var(--text-primary);
+  }
+
+  p {
+    line-height: var(--line-height-relaxed);
+    color: var(--text-secondary);
+  }
+
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  /* Link base */
+  a {
+    color: var(--nav-active);
+    text-decoration: none;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  a:hover {
+    opacity: 0.8;
+  }
+
+  /* Focus ring — accessibility requirement (DESIGN_LANGUAGE.md) */
+  :focus-visible {
+    outline: 2px solid var(--nav-active);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: hsla(217, 91%, 60%, 0.25);
+    color: var(--text-primary);
+  }
+
+  /* Scrollbar styling — subtle, architectural */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface-base);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+  }
+
+  /* Images and media */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Canvas element — used by React Three Fiber */
+  canvas {
+    display: block;
+    touch-action: none;
+  }
+
+  /* Reduced motion — accessibility requirement (DESIGN_TOKENS.md) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
