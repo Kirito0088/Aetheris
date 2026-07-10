@@ -684,13 +684,83 @@ The Design System is successful when:
 
 ---
 
+# Refinement Updates: Phase 6 Experience Design Polish
+
+In the continuation of Phase 6 Experience Design, the design system has been refined to move away from a dense "operating system / cyberpunk terminal" visual simulator to a clean, calm, modern enterprise layout.
+
+## 1. Visual Language Redesign Guidelines
+* **Restraint Over Clutter**: Eliminate raw monospace text wrappers, technical GPS indicators, and latency counters from standard user interfaces.
+* **Breathing Room & Rhythm**: Increase padding and card margins. Use a grid layout with a single dominant workspace (the Digital Twin) and contextual panels that adapt.
+* **Typography Policy**: Inter is the primary typeface for all text block paragraphs, buttons, labels, and headers. Monospace (JetBrains Mono) is strictly reserved for spatial coordinates, numeric metrics, timestamps, percentages, and telemetry logs.
+
+## 2. Experience Role-Based Architecture
+The Aetheris platform separates the presentation experience layer from the core shared engines:
+* **Fan Experience Console**: Tailored for stadium spectators. Focuses on access routes, concessions lookup, seat block guides, elevator status, and fan-facing AI insights.
+* **Organizer Command Console**: Advanced administrative view containing tactical incident dispatches, security alert rosters, and deep path planning configurations.
+* Both experiences share the same 3D Digital Twin, spatial routing, and prediction libraries.
+
+---
+
+# Digital Twin 3D Layer
+
+> Added in Phase 6 Priority 1.1
+
+The Digital Twin's 3D layer uses a production GLB model as its visual and spatial foundation. Rather than treating the stadium as a decoration, the GLB geometry acts as the authoritative coordinate system for entity anchoring and path routing.
+
+## Stadium Asset
+
+The production stadium is the **KOREA Jeju World Cup Stadium 4K** (500K triangles, 27 PBR materials, 6 textures). It is loaded as a static GLB asset via `useGLTF()` with eager preloading.
+
+## Three-Layer Architecture
+
+| Layer | Component | Responsibility |
+|---|---|---|
+| Visual | `StadiumGLB` | Pure GLB rendering. No logic. |
+| Transform | `StadiumSpatialAdapter` | Maps GLB to routing coordinate space |
+| Interaction | `StadiumInteractionLayer` | Invisible colliders matching the geometry |
+
+## Entity & Route Anchoring
+
+- **Anchor Points**: All operational POIs are anchored to verified positions on the GLB geometry (gates at outer perimeter, concessions/services along the concourse ring).
+- **Walkable Paths**: Pedestrian routing waypoints form an elliptical ring following the inner concourse structure, connecting gates and stands along natural walkable corridors.
+
+## Camera Profiles
+
+Camera positions are defined as reusable profiles in `stadium-config.ts` to frame the GLB cinematically:
+
+| Profile | Purpose |
+|---|---|
+| Hero | Sweep establishing shot for cinematic fly-in |
+| Landing | Slow orbit for landing page |
+| Overview | Default aerial view |
+| Navigation | Closer view of pathways |
+| Operations | Operational dashboard angle |
+| Accessibility | Focus on accessible entrances |
+| Journey | Driven by route animation |
+| Emergency | Top-down emergency view |
+
+## Lighting Presets
+
+The stadium never owns lighting. Lighting is configured through presets:
+
+| Preset | Description |
+|---|---|
+| Match Day | Bright, vivid daylight |
+| Golden Hour | Warm sunset lighting |
+| Morning | Cool, soft morning light |
+| Night | Dark with minimal illumination |
+
+## Configuration
+
+All values are centralized in `stadium-config.ts`. No magic numbers exist in rendering code.
+
+See [STADIUM_ASSET.md](./STADIUM_ASSET.md) for detailed asset analysis.
+
+---
+
 # Conclusion
 
 The Aetheris Design System transforms the project's visual philosophy into reusable implementation patterns.
-
-It is not intended to restrict creativity.
-
-Its purpose is to ensure that every interface feels like it belongs to the same product, regardless of when or by whom it is built.
 
 Together with the Design Language and Design Tokens, this document forms the complete foundation for all user interface development within Aetheris.
 

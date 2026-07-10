@@ -19,69 +19,69 @@
 // Raw design values — never referenced directly by components.
 // =============================================================================
 
-/** Neutral palette — full grey scale from white to near-black */
+/** Warm stone neutral palette — light-theme backbone (Phase 6). */
 export const PRIMITIVE_COLORS = {
   neutral: {
     0: "hsl(0, 0%, 100%)",
-    50: "hsl(210, 40%, 98%)",
-    100: "hsl(210, 40%, 96%)",
-    200: "hsl(214, 32%, 91%)",
-    300: "hsl(213, 27%, 84%)",
-    400: "hsl(215, 20%, 65%)",
-    500: "hsl(215, 16%, 47%)",
-    600: "hsl(215, 19%, 35%)",
-    700: "hsl(215, 25%, 27%)",
-    800: "hsl(217, 33%, 17%)",
-    900: "hsl(222, 47%, 11%)",
-    950: "hsl(229, 84%, 5%)",
+    50: "hsl(40, 38%, 98%)",
+    100: "hsl(40, 24%, 96%)",
+    200: "hsl(36, 20%, 92%)",
+    300: "hsl(34, 16%, 85%)",
+    400: "hsl(32, 12%, 70%)",
+    500: "hsl(30, 8%, 52%)",
+    600: "hsl(28, 9%, 40%)",
+    700: "hsl(25, 11%, 30%)",
+    800: "hsl(24, 14%, 20%)",
+    900: "hsl(24, 18%, 13%)",
+    950: "hsl(24, 24%, 8%)",
   },
   blue: {
     50: "hsl(214, 100%, 97%)",
     100: "hsl(214, 95%, 93%)",
-    200: "hsl(213, 97%, 87%)",
-    300: "hsl(212, 96%, 78%)",
-    400: "hsl(213, 94%, 68%)",
-    500: "hsl(217, 91%, 60%)",
-    600: "hsl(221, 83%, 53%)",
-    700: "hsl(224, 76%, 48%)",
+    200: "hsl(213, 94%, 87%)",
+    300: "hsl(212, 92%, 78%)",
+    400: "hsl(214, 90%, 66%)",
+    500: "hsl(214, 86%, 55%)",
+    600: "hsl(216, 84%, 48%)",
+    700: "hsl(219, 80%, 41%)",
     800: "hsl(226, 71%, 40%)",
     900: "hsl(224, 64%, 33%)",
   },
   green: {
-    50: "hsl(138, 76%, 97%)",
-    100: "hsl(141, 84%, 93%)",
-    200: "hsl(141, 79%, 85%)",
-    300: "hsl(142, 77%, 73%)",
-    400: "hsl(142, 69%, 58%)",
-    500: "hsl(142, 71%, 45%)",
-    600: "hsl(142, 76%, 36%)",
-    700: "hsl(142, 72%, 29%)",
-    800: "hsl(143, 64%, 24%)",
-    900: "hsl(144, 61%, 20%)",
+    50: "hsl(150, 60%, 96%)",
+    100: "hsl(150, 62%, 90%)",
+    200: "hsl(152, 60%, 80%)",
+    300: "hsl(154, 62%, 66%)",
+    400: "hsl(158, 68%, 48%)",
+    500: "hsl(160, 84%, 39%)",
+    600: "hsl(161, 88%, 31%)",
+    700: "hsl(162, 84%, 25%)",
+    800: "hsl(163, 78%, 20%)",
+    900: "hsl(164, 74%, 16%)",
   },
   amber: {
-    50: "hsl(48, 100%, 96%)",
-    100: "hsl(48, 96%, 89%)",
-    200: "hsl(48, 97%, 77%)",
-    300: "hsl(46, 97%, 65%)",
-    400: "hsl(43, 96%, 56%)",
-    500: "hsl(38, 92%, 50%)",
-    600: "hsl(32, 95%, 44%)",
-    700: "hsl(26, 90%, 37%)",
-    800: "hsl(23, 83%, 31%)",
-    900: "hsl(22, 78%, 26%)",
+    50: "hsl(45, 100%, 96%)",
+    100: "hsl(45, 96%, 89%)",
+    200: "hsl(44, 94%, 78%)",
+    300: "hsl(43, 90%, 68%)",
+    400: "hsl(43, 88%, 60%)",
+    500: "hsl(41, 82%, 52%)",
+    600: "hsl(36, 80%, 45%)",
+    700: "hsl(30, 80%, 38%)",
+    800: "hsl(25, 78%, 31%)",
+    900: "hsl(22, 74%, 26%)",
   },
   red: {
     50: "hsl(0, 86%, 97%)",
-    100: "hsl(0, 93%, 94%)",
-    200: "hsl(0, 96%, 89%)",
-    300: "hsl(0, 94%, 82%)",
-    400: "hsl(0, 91%, 71%)",
-    500: "hsl(0, 84%, 60%)",
-    600: "hsl(0, 72%, 51%)",
-    700: "hsl(0, 74%, 42%)",
-    800: "hsl(0, 70%, 35%)",
-    900: "hsl(0, 63%, 31%)",
+    100: "hsl(0, 90%, 94%)",
+    200: "hsl(0, 92%, 88%)",
+    300: "hsl(0, 90%, 80%)",
+    400: "hsl(0, 84%, 66%)",
+    500: "hsl(0, 78%, 55%)",
+    600: "hsl(0, 72%, 47%)",
+    700: "hsl(0, 72%, 40%)",
+    800: "hsl(0, 70%, 33%)",
+    900: "hsl(0, 64%, 28%)",
   },
 } as const;
 
@@ -160,58 +160,58 @@ export const PRIMITIVE_BLUR = {
 /** Surface tokens — background surfaces */
 export const SEMANTIC_COLORS = {
   surface: {
-    base: "hsl(229, 84%, 5%)", // Neutral-950
-    elevated: "hsl(222, 47%, 11%)", // Neutral-900
-    glass: "hsla(222, 47%, 11%, 0.6)", // Neutral-900 + alpha
-    inverse: "hsl(0, 0%, 100%)", // Neutral-0
-    overlay: "hsla(229, 84%, 5%, 0.8)", // Base + alpha
+    base: "hsl(40, 38%, 98%)", // Neutral-50 — warm white canvas
+    elevated: "hsl(0, 0%, 100%)", // Neutral-0 — pure white cards
+    glass: "hsla(0, 0%, 100%, 0.72)", // frosted light
+    inverse: "hsl(24, 24%, 8%)", // Neutral-950 — dark chip on light
+    overlay: "hsla(24, 24%, 8%, 0.45)", // scrim over 3D
   },
   text: {
-    primary: "hsl(210, 40%, 98%)", // Neutral-50
-    secondary: "hsl(213, 27%, 84%)", // Neutral-300
-    tertiary: "hsl(215, 20%, 65%)", // Neutral-400
-    disabled: "hsl(215, 16%, 47%)", // Neutral-500
-    inverse: "hsl(229, 84%, 5%)", // Neutral-950
+    primary: "hsl(24, 24%, 8%)", // Neutral-950 — ink
+    secondary: "hsl(25, 11%, 30%)", // Neutral-700
+    tertiary: "hsl(30, 8%, 52%)", // Neutral-500
+    disabled: "hsl(32, 12%, 70%)", // Neutral-400
+    inverse: "hsl(0, 0%, 100%)", // Neutral-0 — text on brand/dark
   },
   border: {
-    default: "hsl(215, 25%, 27%)", // Neutral-700
-    strong: "hsl(215, 19%, 35%)", // Neutral-600
-    subtle: "hsl(217, 33%, 17%)", // Neutral-800
+    default: "hsl(36, 20%, 92%)", // Neutral-200
+    strong: "hsl(34, 16%, 85%)", // Neutral-300
+    subtle: "hsl(40, 24%, 96%)", // Neutral-100
   },
   state: {
-    success: "hsl(142, 71%, 45%)", // Green-500
-    warning: "hsl(38, 92%, 50%)", // Amber-500
-    danger: "hsl(0, 84%, 60%)", // Red-500
-    info: "hsl(217, 91%, 60%)", // Blue-500
-    neutral: "hsl(215, 16%, 47%)", // Neutral-500
+    success: "hsl(160, 84%, 39%)", // Emerald-500
+    warning: "hsl(41, 82%, 52%)", // Gold-500
+    danger: "hsl(0, 78%, 55%)", // FIFA Red-500
+    info: "hsl(214, 86%, 55%)", // FIFA Blue-500
+    neutral: "hsl(30, 8%, 52%)", // Neutral-500
   },
   navigation: {
-    active: "hsl(217, 91%, 60%)", // Blue-500
-    hover: "hsl(217, 33%, 17%)", // Neutral-800
-    selected: "hsla(217, 91%, 60%, 0.15)", // Blue-500 with low alpha
+    active: "hsl(216, 84%, 48%)", // Blue-600
+    hover: "hsl(40, 24%, 96%)", // Neutral-100
+    selected: "hsla(214, 86%, 55%, 0.12)", // Blue-500 low alpha
   },
   ai: {
-    recommendation: "hsl(217, 91%, 60%)", // Blue-500 — subtle, not chatbot-like
-    prediction: "hsl(142, 71%, 45%)", // Green-500
-    insight: "hsl(215, 20%, 65%)", // Neutral-400
+    recommendation: "hsl(214, 86%, 55%)", // Blue-500 — subtle, not chatbot-like
+    prediction: "hsl(160, 84%, 39%)", // Emerald-500
+    insight: "hsl(30, 8%, 52%)", // Neutral-500
   },
   crowd: {
-    low: "hsl(142, 71%, 45%)", // Green-500 — safe density
-    medium: "hsl(38, 92%, 50%)", // Amber-500 — moderate density
-    high: "hsl(32, 95%, 44%)", // Amber-600 — high density
-    critical: "hsl(0, 84%, 60%)", // Red-500 — critical density
+    low: "hsl(160, 84%, 39%)", // Emerald — safe density
+    medium: "hsl(41, 82%, 52%)", // Gold — moderate density
+    high: "hsl(36, 80%, 45%)", // Amber-600 — high density
+    critical: "hsl(0, 78%, 55%)", // FIFA Red — critical density
   },
   accessibility: {
-    route: "hsl(142, 71%, 45%)", // Green-500 — accessible routes
-    wheelchair: "hsl(213, 94%, 68%)", // Blue-300 — wheelchair specific
-    elevator: "hsl(214, 95%, 93%)", // Blue-100 — elevator indicator
-    assistance: "hsl(38, 92%, 50%)", // Amber-500 — assistance points
+    route: "hsl(160, 84%, 39%)", // Emerald — accessible routes
+    wheelchair: "hsl(214, 86%, 55%)", // Blue-500 — wheelchair specific
+    elevator: "hsl(214, 90%, 66%)", // Blue-400 — elevator indicator
+    assistance: "hsl(41, 82%, 52%)", // Gold — assistance points
   },
   transportation: {
-    parking: "hsl(217, 91%, 60%)", // Blue-500
-    metro: "hsl(142, 71%, 45%)", // Green-500
-    bus: "hsl(38, 92%, 50%)", // Amber-500
-    walking: "hsl(215, 20%, 65%)", // Neutral-400
+    parking: "hsl(214, 86%, 55%)", // Blue-500
+    metro: "hsl(160, 84%, 39%)", // Emerald-500
+    bus: "hsl(41, 82%, 52%)", // Gold-500
+    walking: "hsl(30, 8%, 52%)", // Neutral-500
   },
 } as const;
 
@@ -230,11 +230,11 @@ export const SEMANTIC_Z_INDEX = {
 /** Elevation (box-shadow) — from DESIGN_TOKENS.md */
 export const SEMANTIC_ELEVATION = {
   0: "none",
-  1: "0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.4)",
-  2: "0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4)",
-  3: "0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.4)",
-  4: "0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.5)",
-  5: "0 25px 50px -12px rgba(0,0,0,0.6)",
+  1: "0 1px 2px rgba(24, 18, 12, 0.06), 0 1px 3px rgba(24, 18, 12, 0.04)",
+  2: "0 2px 6px rgba(24, 18, 12, 0.06), 0 4px 12px rgba(24, 18, 12, 0.05)",
+  3: "0 6px 16px rgba(24, 18, 12, 0.08), 0 12px 28px rgba(24, 18, 12, 0.06)",
+  4: "0 12px 28px rgba(24, 18, 12, 0.10), 0 24px 48px rgba(24, 18, 12, 0.08)",
+  5: "0 24px 56px rgba(24, 18, 12, 0.14), 0 40px 80px rgba(24, 18, 12, 0.10)",
 } as const;
 
 /** Opacity scale — from DESIGN_TOKENS.md */
@@ -261,14 +261,20 @@ export const SEMANTIC_OPACITY = {
 
 /** Duration tokens in milliseconds */
 export const MOTION_DURATION = {
-  instant: 100,
-  fast: 150,
-  normal: 200,
-  moderate: 250,
-  slow: 300,
-  slower: 400,
-  sluggish: 600,
-  cinematic: 800,
+  instant: 0,
+  feedback: 120,
+  context: 240,
+  transition: 420,
+  hero: 900,
+
+  // Legacy compatibility fallbacks
+  fast: 120,
+  normal: 240,
+  moderate: 240,
+  slow: 420,
+  slower: 420,
+  sluggish: 900,
+  cinematic: 900,
 } as const;
 
 /**

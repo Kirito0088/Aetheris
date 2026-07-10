@@ -21,39 +21,44 @@ export const ZoneEntity = React.memo(function ZoneEntity({ config }: ZoneEntityP
 
   // Calculate material properties
   const materialProps = useMemo(() => {
+    const isDimmed = selectedId !== null && !isSelected;
+    
     let opacity = 0.15;
     let emissiveIntensity = 0.0;
     let mainColor = color;
 
     if (isSelected) {
-      opacity = 0.45;
-      emissiveIntensity = 0.35;
-      mainColor = "#3182ce"; // Premium selection blue
+      opacity = 0.65;
+      emissiveIntensity = 0.45;
+      mainColor = "#2563eb"; // Premium selection blue
     } else if (isHovered) {
-      opacity = 0.3;
-      emissiveIntensity = 0.15;
+      opacity = 0.35;
+      emissiveIntensity = 0.2;
+    } else if (isDimmed) {
+      opacity = 0.04; // Dim non-selected zones to 4% opacity
     }
 
     return {
       color: mainColor,
       transparent: true,
       opacity,
-      roughness: 0.5,
-      metalness: 0.1,
-      emissive: isSelected ? "#3182ce" : mainColor,
-      emissiveIntensity,
+      roughness: isSelected ? 0.3 : 0.6,
+      metalness: isSelected ? 0.4 : 0.1,
+      emissive: isSelected ? "#3b82f6" : mainColor,
+      emissiveIntensity: isDimmed ? 0 : emissiveIntensity,
       depthWrite: false, // Prevents Z-fighting and opacity overlap issues
     };
-  }, [isSelected, isHovered, color]);
+  }, [isSelected, isHovered, color, selectedId]);
 
   // Outline (Edges) properties
   const outlineProps = useMemo(() => {
+    const isDimmed = selectedId !== null && !isSelected;
     if (isSelected) {
       return {
         visible: true,
-        color: "#63b3ed",
+        color: "#60a5fa",
         threshold: 15,
-        lineWidth: 1.5,
+        lineWidth: 2.0,
       };
     }
     if (isHovered) {
@@ -61,16 +66,24 @@ export const ZoneEntity = React.memo(function ZoneEntity({ config }: ZoneEntityP
         visible: true,
         color: "#ffffff",
         threshold: 15,
-        lineWidth: 1.0,
+        lineWidth: 1.2,
+      };
+    }
+    if (isDimmed) {
+      return {
+        visible: true,
+        color: color,
+        threshold: 15,
+        lineWidth: 0.15,
       };
     }
     return {
       visible: true,
       color: color,
       threshold: 15,
-      lineWidth: 0.5,
+      lineWidth: 0.6,
     };
-  }, [isSelected, isHovered, color]);
+  }, [isSelected, isHovered, color, selectedId]);
 
   // Render the appropriate geometry
   const renderGeometry = () => {

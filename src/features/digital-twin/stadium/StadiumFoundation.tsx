@@ -1,88 +1,55 @@
-import type { ThreeEvent } from '@react-three/fiber';
-import { Cylinder, Ring, Box } from '@react-three/drei';
-import { useDigitalTwinStore } from '../store/useDigitalTwinStore';
+'use client';
 
+import { Suspense } from 'react';
+import { StadiumGLB } from './StadiumGLB';
+import { StadiumSpatialAdapter } from './StadiumSpatialAdapter';
+import { StadiumInteractionLayer } from './StadiumInteractionLayer';
+
+/**
+ * StadiumFoundation — Phase 6 Production GLB Stadium.
+ *
+ * Composes the three-layer stadium architecture:
+ *
+ * 1. StadiumSpatialAdapter — Scene Adapter that transforms GLB coordinates
+ *    to match the routing coordinate system. The ONLY place transforms live.
+ *
+ * 2. StadiumGLB — Pure visual rendering of the production GLB model.
+ *    No business logic. No interaction handling.
+ *
+ * 3. StadiumInteractionLayer — Invisible colliders for hover/select/click.
+ *    Operates in routing coordinate space, completely independent of the GLB.
+ *
+ * Architecture (mandatory):
+ * ```
+ * StadiumFoundation
+ *   ├── StadiumSpatialAdapter (transforms)
+ *   │     └── StadiumGLB (visual rendering)
+ *   └── StadiumInteractionLayer (invisible colliders, routing coordinates)
+ * ```
+ *
+ * This architecture ensures:
+ * - The GLB can be replaced without affecting routing or interaction
+ * - Business logic never depends on mesh names
+ * - The rendering layer is separate from the intelligence layer
+ * - The Scene Adapter is the only place transforms exist
+ *
+ * @see stadium-config.ts for all configuration values
+ */
 export function StadiumFoundation() {
-  const setHovered = useDigitalTwinStore((state) => state.setHovered);
-  const setSelected = useDigitalTwinStore((state) => state.setSelected);
-  const hoveredId = useDigitalTwinStore((state) => state.interaction.hoveredId);
-  const selectedId = useDigitalTwinStore((state) => state.interaction.selectedId);
-
-  const handlePointerOver = (id: string) => (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    setHovered(id);
-  };
-
-  const handlePointerOut = () => (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    setHovered(null);
-  };
-
-  const handleClick = (id: string) => (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation();
-    setSelected(id === selectedId ? null : id);
-  };
-
-  const getMaterialProps = (id: string, defaultColor: string) => {
-    if (selectedId === id) return { color: "#3182ce", roughness: 0.3, emissive: "#2b6cb0", emissiveIntensity: 0.4 };
-    if (hoveredId === id) return { color: "#63b3ed", roughness: 0.4, emissive: "#3182ce", emissiveIntensity: 0.2 };
-    return { color: defaultColor, roughness: 0.7 };
-  };
-
   return (
-    <group position={[0, 0, 0]}>
-      {/* Pitch */}
-      <Box 
-        args={[100, 1, 60]} 
-        position={[0, 0.5, 0]} 
-        receiveShadow 
-        castShadow
-        onPointerOver={handlePointerOver('pitch')}
-        onPointerOut={handlePointerOut()}
-        onClick={handleClick('pitch')}
-      >
-        <meshStandardMaterial {...getMaterialProps('pitch', '#2d3748')} />
-      </Box>
+    <group name="stadium-foundation">
+      {/* Visual Stadium (GLB) — wrapped in spatial adapter for coordinate mapping */}
+      <StadiumSpatialAdapter>
+        <Suspense fallback={null}>
+          <StadiumGLB />
+        </Suspense>
+      </StadiumSpatialAdapter>
 
-      {/* Lower Tier */}
-      <Cylinder 
-        args={[80, 70, 10, 64]} 
-        position={[0, 5, 0]} 
-        receiveShadow 
-        castShadow
-        onPointerOver={handlePointerOver('lower-tier')}
-        onPointerOut={handlePointerOut()}
-        onClick={handleClick('lower-tier')}
-      >
-        <meshStandardMaterial {...getMaterialProps('lower-tier', '#4a5568')} />
-      </Cylinder>
-
-      {/* Upper Tier */}
-      <Cylinder 
-        args={[100, 90, 15, 64]} 
-        position={[0, 15, 0]} 
-        receiveShadow 
-        castShadow
-        onPointerOver={handlePointerOver('upper-tier')}
-        onPointerOut={handlePointerOut()}
-        onClick={handleClick('upper-tier')}
-      >
-        <meshStandardMaterial {...getMaterialProps('upper-tier', '#4a5568')} />
-      </Cylinder>
-
-      {/* Outer Structure / Roof Ring */}
-      <Ring 
-        args={[95, 110, 64]} 
-        position={[0, 25, 0]} 
-        rotation={[-Math.PI / 2, 0, 0]}
-        receiveShadow 
-        castShadow
-        onPointerOver={handlePointerOver('roof')}
-        onPointerOut={handlePointerOut()}
-        onClick={handleClick('roof')}
-      >
-        <meshStandardMaterial {...getMaterialProps('roof', '#e2e8f0')} metalness={0.1} side={2} />
-      </Ring>
+      {/* Invisible Interaction Layer — operates in routing coordinate space */}
+      {/* Rendered OUTSIDE the SpatialAdapter because it uses routing coordinates directly */}
+      <StadiumInteractionLayer />
     </group>
   );
 }
+
+export default StadiumFoundation;

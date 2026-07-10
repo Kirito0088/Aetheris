@@ -21,34 +21,33 @@ export const LayerToggle = React.memo(function LayerToggle({
     <button
       onClick={onToggle}
       className={clsx(
-        "flex items-center justify-between w-full px-3 py-2 text-left rounded-lg transition-all duration-200",
-        "border focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400",
-        isActive
-          ? "bg-neutral-900/60 border-neutral-700 text-white shadow-sm shadow-blue-500/5"
-          : "bg-transparent border-transparent text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/30"
+        "flex items-center justify-between w-full px-3 py-2 text-left rounded-xl transition-all duration-200",
+        "focus:outline-none focus:ring-2 focus:ring-blue-500/30",
       )}
+      style={{
+        background: isActive ? 'var(--surface-elevated)' : 'transparent',
+        border: isActive ? '1px solid var(--border-default)' : '1px solid transparent',
+        boxShadow: isActive ? 'var(--elevation-1)' : 'none',
+        color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)',
+      }}
       aria-pressed={isActive}
       aria-label={`Toggle ${name} layer. ${description}`}
       title={description}
     >
       <div className="flex flex-col pr-2">
-        <span className="text-xs font-semibold tracking-wide uppercase">{name}</span>
-        <span className="text-[10px] text-neutral-500 line-clamp-1 mt-0.5 font-normal">
+        <span className="text-xs font-semibold">{name}</span>
+        <span className="text-[10px] line-clamp-1 mt-0.5" style={{ color: 'var(--text-disabled)' }}>
           {description}
         </span>
       </div>
       
-      {/* Visual Status Indicator */}
+      {/* Toggle indicator */}
       <span
-        className={clsx(
-          "w-2.5 h-2.5 rounded-full transition-all duration-300 relative flex",
-          isActive ? "bg-blue-500" : "bg-neutral-800"
-        )}
-      >
-        {isActive && (
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-        )}
-      </span>
+        className="w-2.5 h-2.5 rounded-full transition-all duration-300 shrink-0"
+        style={{
+          background: isActive ? 'var(--brand-blue)' : 'var(--border-strong)',
+        }}
+      />
     </button>
   );
 });

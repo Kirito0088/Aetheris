@@ -1,4 +1,4 @@
-import { SCENE_LANDMARKS } from './scene-landmarks';
+import { STADIUM_CONFIG } from '../stadium/stadium-config';
 
 export interface CameraPath {
   position: readonly [number, number, number];
@@ -6,25 +6,27 @@ export interface CameraPath {
   transitionDuration?: number;
 }
 
+const profiles = STADIUM_CONFIG.camera.profiles;
+
 export const CAMERA_PATHS = {
   intro: {
-    position: [0, 150, 250],
-    target: SCENE_LANDMARKS.pitchCenter,
-    transitionDuration: 4,
+    position: profiles.hero.position,
+    target: profiles.hero.target,
+    transitionDuration: profiles.hero.transitionDuration,
   },
   overview: {
-    position: SCENE_LANDMARKS.overview,
-    target: SCENE_LANDMARKS.pitchCenter,
-    transitionDuration: 2,
+    position: profiles.overview.position,
+    target: profiles.overview.target,
+    transitionDuration: profiles.overview.transitionDuration,
   },
   mainEntrance: {
-    position: SCENE_LANDMARKS.mainEntrance,
-    target: [0, 10, 50],
-    transitionDuration: 1.5,
+    position: profiles.navigation.position,
+    target: profiles.navigation.target,
+    transitionDuration: profiles.navigation.transitionDuration,
   },
   gateA: {
-    position: SCENE_LANDMARKS.westGate,
-    target: [SCENE_LANDMARKS.westGate[0] + 20, SCENE_LANDMARKS.westGate[1], 0],
+    position: [-90, 15, -90] as const,
+    target: [0, 5, -96] as const,
     transitionDuration: 1.5,
   },
 } as const satisfies Record<string, CameraPath>;

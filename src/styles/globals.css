@@ -1,101 +1,129 @@
 /**
- * Aetheris Global CSS
+ * Aetheris Global CSS — Phase 6 Experience Design (Light Theme)
  *
  * This file implements the design token system as CSS custom properties.
- * All values are sourced directly from DESIGN_TOKENS.md.
+ * All values are sourced from DESIGN_TOKENS.md.
+ *
+ * VISUAL DIRECTION (Phase 6):
+ * The previous dark "operating system" aesthetic is deprecated. The new
+ * language is a premium, bright, welcoming FIFA World Cup 2026 direction —
+ * warm white surfaces, soft stone neutrals, and confident brand accents
+ * (FIFA Blue, FIFA Red, Emerald, and a Gold reserved for VIP).
  *
  * Architecture:
- * - @layer base: CSS resets and base element styles
- * - @layer tokens: CSS custom property definitions (design tokens)
- * - @layer utilities: Utility classes built from tokens
+ * - @layer base: token definitions + CSS resets + base element styles
  *
  * Rules (DESIGN_TOKENS.md):
  * - Components never reference raw values.
  * - Components consume semantic tokens (via var(--token-name)).
- * - Hardcoded visual values are prohibited.
+ * - Token NAMES are stable across the theme change; only VALUES flip.
  *
  * Typography (DESIGN_TOKENS.md):
- * - Primary: Inter
- * - Monospace: JetBrains Mono
- * - Fallback: system-ui
+ * - Primary: Inter  ·  Monospace: JetBrains Mono  ·  Fallback: system-ui
  */
 
-/* ============================================================================
-   GOOGLE FONTS IMPORT
-   Inter and JetBrains Mono — specified in DESIGN_TOKENS.md.
-   Subset to latin for performance.
-   Must come FIRST — @import rules must precede all other rules.
-   ============================================================================ */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @import "tailwindcss";
 
 /* ============================================================================
-   CSS CUSTOM PROPERTIES — DESIGN TOKENS
-   Primitive → Semantic → Component layers.
-   All tokens defined here map directly to DESIGN_TOKENS.md.
+   CSS CUSTOM PROPERTIES — DESIGN TOKENS (LIGHT THEME)
+   Primitive → Semantic. All tokens map to DESIGN_TOKENS.md.
    ============================================================================ */
 
 @layer base {
   :root {
-    /* --- PRIMITIVE COLOR TOKENS --- */
-    /* Neutral palette */
-    --color-neutral-0: hsl(0, 0%, 100%);
-    --color-neutral-50: hsl(210, 40%, 98%);
-    --color-neutral-100: hsl(210, 40%, 96%);
-    --color-neutral-200: hsl(214, 32%, 91%);
-    --color-neutral-300: hsl(213, 27%, 84%);
-    --color-neutral-400: hsl(215, 20%, 65%);
-    --color-neutral-500: hsl(215, 16%, 47%);
-    --color-neutral-600: hsl(215, 19%, 35%);
-    --color-neutral-700: hsl(215, 25%, 27%);
-    --color-neutral-800: hsl(217, 33%, 17%);
-    --color-neutral-900: hsl(222, 47%, 11%);
-    --color-neutral-950: hsl(229, 84%, 5%);
+    /* ------------------------------------------------------------------ */
+    /* PRIMITIVE COLOR TOKENS                                              */
+    /* ------------------------------------------------------------------ */
 
-    /* Blue palette */
+    /* Warm stone neutral scale — the backbone of the light theme.
+       Slightly warm hue (40°) keeps large white areas from feeling clinical. */
+    --color-neutral-0: hsl(0, 0%, 100%);
+    --color-neutral-50: hsl(40, 38%, 98%);   /* warm white — app canvas */
+    --color-neutral-100: hsl(40, 24%, 96%);
+    --color-neutral-200: hsl(36, 20%, 92%);
+    --color-neutral-300: hsl(34, 16%, 85%);
+    --color-neutral-400: hsl(32, 12%, 70%);
+    --color-neutral-500: hsl(30, 8%, 52%);
+    --color-neutral-600: hsl(28, 9%, 40%);
+    --color-neutral-700: hsl(25, 11%, 30%);
+    --color-neutral-800: hsl(24, 14%, 20%);
+    --color-neutral-900: hsl(24, 18%, 13%);
+    --color-neutral-950: hsl(24, 24%, 8%);   /* ink — deepest text */
+
+    /* FIFA Blue — confident, optimistic azure (primary brand). */
     --color-blue-50: hsl(214, 100%, 97%);
     --color-blue-100: hsl(214, 95%, 93%);
-    --color-blue-300: hsl(212, 96%, 78%);
-    --color-blue-400: hsl(213, 94%, 68%);
-    --color-blue-500: hsl(217, 91%, 60%);
-    --color-blue-600: hsl(221, 83%, 53%);
+    --color-blue-200: hsl(213, 94%, 87%);
+    --color-blue-300: hsl(212, 92%, 78%);
+    --color-blue-400: hsl(214, 90%, 66%);
+    --color-blue-500: hsl(214, 86%, 55%);    /* FIFA Blue */
+    --color-blue-600: hsl(216, 84%, 48%);
+    --color-blue-700: hsl(219, 80%, 41%);
 
-    /* Green palette */
-    --color-green-400: hsl(142, 69%, 58%);
-    --color-green-500: hsl(142, 71%, 45%);
-    --color-green-600: hsl(142, 76%, 36%);
+    /* Emerald — safe density, accessible routes, success. */
+    --color-green-50: hsl(150, 60%, 96%);
+    --color-green-100: hsl(150, 62%, 90%);
+    --color-green-400: hsl(158, 68%, 48%);
+    --color-green-500: hsl(160, 84%, 39%);   /* Emerald */
+    --color-green-600: hsl(161, 88%, 31%);
 
-    /* Amber palette */
-    --color-amber-400: hsl(43, 96%, 56%);
-    --color-amber-500: hsl(38, 92%, 50%);
-    --color-amber-600: hsl(32, 95%, 44%);
+    /* Gold — VIP only. Used sparingly. */
+    --color-amber-50: hsl(45, 100%, 96%);
+    --color-amber-100: hsl(45, 96%, 89%);
+    --color-amber-400: hsl(43, 88%, 60%);
+    --color-amber-500: hsl(41, 82%, 52%);    /* Gold (VIP) */
+    --color-amber-600: hsl(36, 80%, 45%);
 
-    /* Red palette */
-    --color-red-500: hsl(0, 84%, 60%);
-    --color-red-600: hsl(0, 72%, 51%);
+    /* FIFA Red — energy, alerts, critical. */
+    --color-red-50: hsl(0, 86%, 97%);
+    --color-red-100: hsl(0, 90%, 94%);
+    --color-red-400: hsl(0, 84%, 66%);
+    --color-red-500: hsl(0, 78%, 55%);       /* FIFA Red */
+    --color-red-600: hsl(0, 72%, 47%);
 
-    /* --- SEMANTIC SURFACE TOKENS --- */
-    --surface-base: var(--color-neutral-950);
-    --surface-elevated: var(--color-neutral-900);
-    --surface-glass: hsla(222, 47%, 11%, 0.6);
-    --surface-inverse: var(--color-neutral-0);
-    --surface-overlay: hsla(229, 84%, 5%, 0.8);
+    /* ------------------------------------------------------------------ */
+    /* BRAND TOKENS (Phase 6) — reference these for brand moments.        */
+    /* ------------------------------------------------------------------ */
+    --brand-blue: var(--color-blue-500);
+    --brand-blue-strong: var(--color-blue-600);
+    --brand-red: var(--color-red-500);
+    --brand-emerald: var(--color-green-500);
+    --brand-gold: var(--color-amber-500);
+    --brand-ink: var(--color-neutral-950);
 
-    /* --- SEMANTIC TEXT TOKENS --- */
-    --text-primary: var(--color-neutral-50);
-    --text-secondary: var(--color-neutral-300);
-    --text-tertiary: var(--color-neutral-400);
-    --text-disabled: var(--color-neutral-500);
-    --text-inverse: var(--color-neutral-950);
+    /* ------------------------------------------------------------------ */
+    /* SEMANTIC SURFACE TOKENS                                            */
+    /* ------------------------------------------------------------------ */
+    --surface-base: var(--color-neutral-50);          /* warm white canvas */
+    --surface-elevated: var(--color-neutral-0);        /* pure white cards  */
+    --surface-sunken: var(--color-neutral-100);        /* insets / wells    */
+    --surface-glass: hsla(0, 0%, 100%, 0.72);          /* frosted light     */
+    --surface-glass-strong: hsla(0, 0%, 100%, 0.86);
+    --surface-inverse: var(--color-neutral-950);       /* dark-on-light chip */
+    --surface-overlay: hsla(24, 24%, 8%, 0.45);        /* scrim over 3D     */
 
-    /* --- SEMANTIC BORDER TOKENS --- */
-    --border-default: var(--color-neutral-700);
-    --border-strong: var(--color-neutral-600);
-    --border-subtle: var(--color-neutral-800);
+    /* ------------------------------------------------------------------ */
+    /* SEMANTIC TEXT TOKENS                                               */
+    /* ------------------------------------------------------------------ */
+    --text-primary: var(--color-neutral-950);          /* ink */
+    --text-secondary: var(--color-neutral-700);
+    --text-tertiary: var(--color-neutral-500);
+    --text-disabled: var(--color-neutral-400);
+    --text-inverse: var(--color-neutral-0);            /* text on dark/brand */
+    --text-brand: var(--color-blue-600);
 
-    /* --- SEMANTIC STATE TOKENS --- */
+    /* ------------------------------------------------------------------ */
+    /* SEMANTIC BORDER TOKENS                                             */
+    /* ------------------------------------------------------------------ */
+    --border-default: var(--color-neutral-200);
+    --border-strong: var(--color-neutral-300);
+    --border-subtle: var(--color-neutral-100);
+
+    /* ------------------------------------------------------------------ */
+    /* SEMANTIC STATE TOKENS                                              */
+    /* ------------------------------------------------------------------ */
     --state-success: var(--color-green-500);
     --state-warning: var(--color-amber-500);
     --state-danger: var(--color-red-500);
@@ -103,14 +131,14 @@
     --state-neutral: var(--color-neutral-500);
 
     /* --- SEMANTIC NAVIGATION TOKENS --- */
-    --nav-active: var(--color-blue-500);
-    --nav-hover: var(--color-neutral-800);
-    --nav-selected: hsla(217, 91%, 60%, 0.15);
+    --nav-active: var(--color-blue-600);
+    --nav-hover: var(--color-neutral-100);
+    --nav-selected: hsla(214, 86%, 55%, 0.12);
 
     /* --- AI TOKENS --- */
     --ai-recommendation: var(--color-blue-500);
     --ai-prediction: var(--color-green-500);
-    --ai-insight: var(--color-neutral-400);
+    --ai-insight: var(--color-neutral-500);
 
     /* --- CROWD INTELLIGENCE TOKENS --- */
     --crowd-low: var(--color-green-500);
@@ -120,38 +148,48 @@
 
     /* --- ACCESSIBILITY TOKENS --- */
     --accessibility-route: var(--color-green-500);
-    --accessibility-wheelchair: var(--color-blue-300);
-    --accessibility-elevator: var(--color-blue-100);
+    --accessibility-wheelchair: var(--color-blue-500);
+    --accessibility-elevator: var(--color-blue-400);
     --accessibility-assistance: var(--color-amber-500);
 
     /* --- TRANSPORTATION TOKENS --- */
     --transport-parking: var(--color-blue-500);
     --transport-metro: var(--color-green-500);
     --transport-bus: var(--color-amber-500);
-    --transport-walking: var(--color-neutral-400);
+    --transport-walking: var(--color-neutral-500);
 
-    /* --- TYPOGRAPHY TOKENS --- */
-    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", monospace;
+    /* --- VIP TOKEN --- */
+    --vip-accent: var(--color-amber-500);
+    --vip-surface: hsla(41, 82%, 52%, 0.10);
 
-    --font-size-xs: 0.75rem;   /* 12px */
-    --font-size-sm: 0.875rem;  /* 14px */
-    --font-size-base: 1rem;    /* 16px */
-    --font-size-lg: 1.125rem;  /* 18px */
-    --font-size-xl: 1.25rem;   /* 20px */
-    --font-size-2xl: 1.5rem;   /* 24px */
-    --font-size-3xl: 1.875rem; /* 30px */
-    --font-size-4xl: 2.25rem;  /* 36px */
-    --font-size-5xl: 3rem;     /* 48px */
-    --font-size-6xl: 3.75rem;  /* 60px */
+    /* ------------------------------------------------------------------ */
+    /* TYPOGRAPHY TOKENS                                                  */
+    /* ------------------------------------------------------------------ */
+    --font-sans: var(--font-inter, "Inter"), system-ui, -apple-system, sans-serif;
+    --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), "Fira Code", monospace;
 
-    --line-height-tight: 1.25;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+    --font-size-6xl: 3.75rem;
+    --font-size-7xl: 4.5rem;
+
+    --line-height-tight: 1.15;
+    --line-height-snug: 1.3;
     --line-height-normal: 1.5;
-    --line-height-relaxed: 1.75;
+    --line-height-relaxed: 1.7;
 
-    --letter-spacing-tighter: -0.05em;
+    --letter-spacing-tighter: -0.03em;
+    --letter-spacing-tight: -0.015em;
     --letter-spacing-normal: 0em;
-    --letter-spacing-wide: 0.05em;
+    --letter-spacing-wide: 0.04em;
+    --letter-spacing-wider: 0.08em;
 
     /* --- SPACING TOKENS (8-point grid) --- */
     --space-0: 0px;
@@ -169,37 +207,44 @@
 
     /* --- BORDER RADIUS TOKENS --- */
     --radius-none: 0px;
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --radius-2xl: 24px;
-    --radius-3xl: 32px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-2xl: 28px;
+    --radius-3xl: 36px;
     --radius-full: 9999px;
 
     /* --- BLUR TOKENS --- */
     --blur-none: 0px;
     --blur-sm: 4px;
     --blur-md: 8px;
-    --blur-lg: 12px;
-    --blur-xl: 16px;
-    --blur-2xl: 24px;
-    --blur-3xl: 32px;
+    --blur-lg: 16px;
+    --blur-xl: 24px;
+    --blur-2xl: 40px;
+    --blur-3xl: 64px;
 
-    /* --- MOTION TOKENS --- */
-    --duration-instant: 100ms;
-    --duration-fast: 150ms;
-    --duration-normal: 200ms;
-    --duration-moderate: 250ms;
-    --duration-slow: 300ms;
-    --duration-slower: 400ms;
-    --duration-sluggish: 600ms;
-    --duration-cinematic: 800ms;
+    /* --- MOTION DURATIONS --- */
+    --duration-instant: 0ms;
+    --duration-feedback: 120ms;
+    --duration-context: 240ms;
+    --duration-transition: 420ms;
+    --duration-hero: 900ms;
+
+    /* Legacy compatibility fallbacks */
+    --duration-fast: 120ms;
+    --duration-normal: 240ms;
+    --duration-moderate: 240ms;
+    --duration-slow: 420ms;
+    --duration-slower: 420ms;
+    --duration-sluggish: 900ms;
+    --duration-cinematic: 900ms;
 
     --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1.0);
     --ease-accelerate: cubic-bezier(0.4, 0.0, 1.0, 1.0);
     --ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1.0);
     --ease-emphasized: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
 
     /* --- Z-INDEX TOKENS --- */
     --z-background: -10;
@@ -211,18 +256,23 @@
     --z-tooltip: 50;
     --z-notification: 60;
 
-    /* --- ELEVATION TOKENS (box-shadow) --- */
+    /* --- ELEVATION TOKENS (soft, light-theme shadows) --- */
     --elevation-0: none;
-    --elevation-1: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.4);
-    --elevation-2: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4);
-    --elevation-3: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.4);
-    --elevation-4: 0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.5);
-    --elevation-5: 0 25px 50px -12px rgba(0,0,0,0.6);
+    --elevation-1: 0 1px 2px rgba(24, 18, 12, 0.06), 0 1px 3px rgba(24, 18, 12, 0.04);
+    --elevation-2: 0 2px 6px rgba(24, 18, 12, 0.06), 0 4px 12px rgba(24, 18, 12, 0.05);
+    --elevation-3: 0 6px 16px rgba(24, 18, 12, 0.08), 0 12px 28px rgba(24, 18, 12, 0.06);
+    --elevation-4: 0 12px 28px rgba(24, 18, 12, 0.10), 0 24px 48px rgba(24, 18, 12, 0.08);
+    --elevation-5: 0 24px 56px rgba(24, 18, 12, 0.14), 0 40px 80px rgba(24, 18, 12, 0.10);
+
+    /* Brand-tinted glow for hero moments (used with restraint) */
+    --glow-blue: 0 8px 30px hsla(214, 86%, 55%, 0.28);
+    --glow-emerald: 0 8px 30px hsla(160, 84%, 39%, 0.24);
+
+    color-scheme: light;
   }
 
   /* =========================================================================
      BASE RESETS
-     Minimal, purposeful resets. Accessibility-first approach.
      ========================================================================= */
 
   *,
@@ -234,45 +284,39 @@
   }
 
   html {
-    /* Prevent layout shift from scrollbar appearing */
     scrollbar-gutter: stable;
-    /* Smooth scroll for anchor links */
     scroll-behavior: smooth;
-    /* Font size base for rem calculations */
     font-size: 16px;
-    /* Prevent iOS text size adjustment */
     -webkit-text-size-adjust: 100%;
-    /* Better font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent horizontal scroll */
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
   }
 
   body {
-    /* Design Language: dark, architectural base */
     background-color: var(--surface-base);
     color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);
-    /* Prevent content from overflowing horizontally */
     min-height: 100dvh;
-    /* Support full-height layouts for the Living Digital Twin */
     display: flex;
     flex-direction: column;
   }
 
-  /* Typography base styles */
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+    font-weight: 700;
     line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
     color: var(--text-primary);
+    text-wrap: balance;
   }
 
   p {
     line-height: var(--line-height-relaxed);
     color: var(--text-secondary);
+    text-wrap: pretty;
   }
 
   code, kbd, samp, pre {
@@ -280,7 +324,6 @@
     font-size: 0.875em;
   }
 
-  /* Link base */
   a {
     color: var(--nav-active);
     text-decoration: none;
@@ -298,32 +341,33 @@
     border-radius: var(--radius-sm);
   }
 
-  /* Selection */
   ::selection {
-    background-color: hsla(217, 91%, 60%, 0.25);
+    background-color: hsla(214, 86%, 55%, 0.22);
     color: var(--text-primary);
   }
 
-  /* Scrollbar styling — subtle, architectural */
+  /* Scrollbar — subtle, light */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--surface-base);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--border-default);
+    background: var(--color-neutral-300);
     border-radius: var(--radius-full);
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--border-strong);
+    background: var(--color-neutral-400);
+    background-clip: content-box;
   }
 
-  /* Images and media */
   img,
   video {
     max-width: 100%;
@@ -331,13 +375,11 @@
     display: block;
   }
 
-  /* Canvas element — used by React Three Fiber */
   canvas {
     display: block;
     touch-action: none;
   }
 
-  /* Reduced motion — accessibility requirement (DESIGN_TOKENS.md) */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -348,4 +390,42 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* ============================================================================
+   UTILITY ANIMATIONS — used across the experience layer.
+   ============================================================================ */
+
+@keyframes aetheris-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+.animate-shake {
+  animation: aetheris-shake 0.4s var(--ease-standard);
+}
+
+@keyframes aetheris-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: aetheris-float 6s ease-in-out infinite;
+}
+
+/* Subtle sheen sweep for premium hero surfaces */
+@keyframes aetheris-sheen {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }

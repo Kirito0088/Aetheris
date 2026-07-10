@@ -58,7 +58,9 @@ export const POIEntity = React.memo(function POIEntity({ config }: POIEntityProp
   }, [metadata.category]);
 
   const pinMaterial = useMemo(() => {
-    const opacity = 0.9;
+    const isDimmed = selectedId !== null && !isSelected;
+    
+    let opacity = 0.9;
     let emissiveIntensity = 0.4;
     const baseColor = isSelected ? "#ffffff" : poiColor;
 
@@ -69,16 +71,21 @@ export const POIEntity = React.memo(function POIEntity({ config }: POIEntityProp
       emissiveIntensity = 1.0;
     }
 
+    if (isDimmed) {
+      opacity = 0.15;
+      emissiveIntensity = 0.05;
+    }
+
     return {
       color: baseColor,
       transparent: true,
       opacity,
-      roughness: 0.2,
-      metalness: 0.8,
+      roughness: isSelected ? 0.1 : 0.2,
+      metalness: isSelected ? 0.9 : 0.8,
       emissive: baseColor,
       emissiveIntensity,
     };
-  }, [isSelected, isHovered, poiColor]);
+  }, [isSelected, isHovered, poiColor, selectedId]);
 
   const outlineColor = isSelected ? "#3182ce" : isHovered ? "#ffffff" : "#1a202c";
 
@@ -104,7 +111,15 @@ export const POIEntity = React.memo(function POIEntity({ config }: POIEntityProp
         <meshBasicMaterial
           color={poiColor}
           transparent
-          opacity={isSelected ? 0.4 : isHovered ? 0.25 : 0.1}
+          opacity={
+            selectedId !== null && !isSelected
+              ? 0.02
+              : isSelected
+                ? 0.4
+                : isHovered
+                  ? 0.25
+                  : 0.1
+          }
           side={2}
         />
       </mesh>

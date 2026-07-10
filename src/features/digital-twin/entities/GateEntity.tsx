@@ -35,13 +35,21 @@ export const GateEntity = React.memo(function GateEntity({ config }: GateEntityP
 
   // Combined visual material configurations
   const frameMaterial = useMemo(() => {
-    let baseColor = isSelected ? "#3182ce" : color;
-    const opacity = 0.8;
-    const metalness = 0.4;
-    const roughness = 0.3;
+    const isDimmed = selectedId !== null && !isSelected;
+    
+    let baseColor = isSelected ? "#2563eb" : color;
+    let opacity = 0.8;
+    let metalness = 0.4;
+    let roughness = 0.3;
 
     if (isHovered) {
-      baseColor = isSelected ? "#63b3ed" : "#e2e8f0";
+      baseColor = isSelected ? "#60a5fa" : "#e2e8f0";
+    }
+
+    if (isDimmed) {
+      opacity = 0.12;
+      metalness = 0.1;
+      roughness = 0.8;
     }
 
     return {
@@ -50,20 +58,21 @@ export const GateEntity = React.memo(function GateEntity({ config }: GateEntityP
       opacity,
       metalness,
       roughness,
-      emissive: isSelected ? "#3182ce" : "#000000",
-      emissiveIntensity: isSelected ? 0.3 : 0,
+      emissive: isSelected ? "#3b82f6" : "#000000",
+      emissiveIntensity: isSelected ? 0.4 : 0,
     };
-  }, [isSelected, isHovered, color]);
+  }, [isSelected, isHovered, color, selectedId]);
 
   const glowMaterial = useMemo(() => {
+    const isDimmed = selectedId !== null && !isSelected;
     return {
       color: statusColor,
       transparent: true,
-      opacity: isSelected ? 0.7 : isHovered ? 0.5 : 0.25,
+      opacity: isDimmed ? 0.03 : isSelected ? 0.75 : isHovered ? 0.55 : 0.25,
       emissive: statusColor,
-      emissiveIntensity: isSelected ? 1.0 : isHovered ? 0.6 : 0.3,
+      emissiveIntensity: isDimmed ? 0.05 : isSelected ? 1.2 : isHovered ? 0.7 : 0.3,
     };
-  }, [isSelected, isHovered, statusColor]);
+  }, [isSelected, isHovered, statusColor, selectedId]);
 
   // Edges outlines
   const edgeColor = isSelected ? "#63b3ed" : isHovered ? "#ffffff" : "#4a5568";

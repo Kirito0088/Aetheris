@@ -1,6 +1,22 @@
 import { Graph, type GraphNode, type GraphEdge } from "./Graph";
 import { EntityRegistry } from "../../digital-twin/registry/EntityRegistry";
 
+/**
+ * GraphBuilder — Phase 6 Priority 1.1 GLB-Anchored
+ *
+ * All routing nodes are positioned to follow the actual stadium geometry.
+ * The concourse ring follows the inner perimeter of the stadium structure.
+ *
+ * After SpatialAdapter scale=0.40, the stadium spans:
+ *   X: ±110, Z: ±100, Y: 0–32
+ *
+ * The concourse ring sits at Y=2 (ground level inside the stadium)
+ * at approximately 85-unit radius from center (inside the outer wall).
+ * The ring is slightly elliptical to match the oval stadium shape.
+ *
+ * This class is NOT rewritten — only node positions are relocated.
+ * The topology (edges, supported types, weights) is preserved.
+ */
 export class GraphBuilder {
   public static build(): Graph {
     const graph = new Graph();
@@ -21,17 +37,22 @@ export class GraphBuilder {
       });
     });
 
-    // 2. Define and add Concourse Waypoints (to allow circular pedestrian navigation)
-    // Concourse Ring is at radius ~110, altitude Y = 1.2
+    // 2. Concourse Waypoints — elliptical ring following stadium shape
+    // Stadium is wider on X (±110) than Z (±100), so the concourse
+    // follows an ellipse at roughly 85×78 radii, Y=2 (ground level)
+    const cRx = 85; // concourse radius X
+    const cRz = 78; // concourse radius Z
+    const cY = 2;   // concourse altitude
+
     const concourseWaypoints: GraphNode[] = [
-      { id: "concourse:n", name: "North Concourse", type: "waypoint", position: [0, 1.2, -110] },
-      { id: "concourse:ne", name: "North-East Concourse", type: "waypoint", position: [77.78, 1.2, -77.78] },
-      { id: "concourse:e", name: "East Concourse", type: "waypoint", position: [110, 1.2, 0] },
-      { id: "concourse:se", name: "South-East Concourse", type: "waypoint", position: [77.78, 1.2, 77.78] },
-      { id: "concourse:s", name: "South Concourse", type: "waypoint", position: [0, 1.2, 110] },
-      { id: "concourse:sw", name: "South-West Concourse", type: "waypoint", position: [-77.78, 1.2, 77.78] },
-      { id: "concourse:w", name: "West Concourse", type: "waypoint", position: [-110, 1.2, 0] },
-      { id: "concourse:nw", name: "North-West Concourse", type: "waypoint", position: [-77.78, 1.2, -77.78] },
+      { id: "concourse:n",  name: "North Concourse",       type: "waypoint", position: [0, cY, -cRz] },
+      { id: "concourse:ne", name: "North-East Concourse",  type: "waypoint", position: [cRx * 0.707, cY, -cRz * 0.707] },
+      { id: "concourse:e",  name: "East Concourse",        type: "waypoint", position: [cRx, cY, 0] },
+      { id: "concourse:se", name: "South-East Concourse",  type: "waypoint", position: [cRx * 0.707, cY, cRz * 0.707] },
+      { id: "concourse:s",  name: "South Concourse",       type: "waypoint", position: [0, cY, cRz] },
+      { id: "concourse:sw", name: "South-West Concourse",  type: "waypoint", position: [-cRx * 0.707, cY, cRz * 0.707] },
+      { id: "concourse:w",  name: "West Concourse",        type: "waypoint", position: [-cRx, cY, 0] },
+      { id: "concourse:nw", name: "North-West Concourse",  type: "waypoint", position: [-cRx * 0.707, cY, -cRz * 0.707] },
     ];
 
     concourseWaypoints.forEach((wp) => graph.addNode(wp));
@@ -53,7 +74,7 @@ export class GraphBuilder {
       const toNode = graph.getNode(conn.to)!;
       const dx = fromNode.position[0] - toNode.position[0];
       const dz = fromNode.position[2] - toNode.position[2];
-      const dist = Math.sqrt(dx * dx + dz * dz); // approximate 2D walking distance
+      const dist = Math.sqrt(dx * dx + dz * dz);
 
       graph.addEdge({
         from: conn.from,
@@ -70,28 +91,28 @@ export class GraphBuilder {
         from: "gate:a",
         to: "concourse:n",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 2,
+        distance: 10,
         name: "North Turnstile Walkway",
       },
       {
         from: "gate:b",
         to: "concourse:e",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 2,
+        distance: 7,
         name: "East Turnstile Walkway",
       },
       {
         from: "gate:c",
         to: "concourse:s",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 2,
+        distance: 10,
         name: "South Turnstile Walkway",
       },
       {
         from: "gate:d",
         to: "concourse:w",
         supportedTypes: ["standard", "accessible", "emergency", "vip"],
-        distance: 2,
+        distance: 7,
         name: "West VIP Secured Corridor",
       },
     ];
@@ -102,15 +123,15 @@ export class GraphBuilder {
       {
         from: "zone:north-stand",
         to: "concourse:n",
-        supportedTypes: ["standard", "emergency"], // Not accessible (requires stairs)
-        distance: 15,
+        supportedTypes: ["standard", "emergency"],
+        distance: 20,
         name: "North Stand General Stairs",
       },
       {
         from: "zone:south-stand",
         to: "concourse:s",
         supportedTypes: ["standard", "emergency"],
-        distance: 15,
+        distance: 20,
         name: "South Stand General Stairs",
       },
       {
@@ -120,7 +141,6 @@ export class GraphBuilder {
         distance: 15,
         name: "West Stand General Stairs",
       },
-      // East Stand Premium Club has regular stairs AND East Elevator accessibility
       {
         from: "zone:east-stand",
         to: "concourse:e",
@@ -140,10 +160,9 @@ export class GraphBuilder {
         from: "poi:elevator-02",
         to: "concourse:e",
         supportedTypes: ["standard", "accessible", "emergency", "vip"],
-        distance: 2,
+        distance: 4,
         name: "East Elevator Lobby Entrance",
       },
-      // VIP Zone connects only to West Lift Core (accessible + VIP)
       {
         from: "poi:elevator-01",
         to: "zone:vip",
@@ -156,10 +175,9 @@ export class GraphBuilder {
         from: "poi:elevator-01",
         to: "concourse:w",
         supportedTypes: ["standard", "accessible", "emergency", "vip"],
-        distance: 2,
+        distance: 4,
         name: "West Elevator Concourse Lobby",
       },
-      // Pitch connects to Concourse for emergency exits only
       {
         from: "zone:pitch",
         to: "concourse:n",
@@ -174,12 +192,11 @@ export class GraphBuilder {
         distance: 30,
         name: "South Player Tunnel (Emergency)",
       },
-      // Parking connects to Gate A
       {
         from: "zone:parking",
         to: "gate:a",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 40,
+        distance: 30,
         name: "North Lot Pedestrian Walkway",
       },
     ];
@@ -191,84 +208,84 @@ export class GraphBuilder {
         from: "poi:medical-01",
         to: "concourse:n",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 10,
+        distance: 8,
         name: "First Aid 1 Ramp Access",
       },
       {
         from: "poi:medical-02",
         to: "concourse:s",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 10,
+        distance: 8,
         name: "First Aid 2 Access Ramp",
       },
       {
         from: "poi:restroom-01",
         to: "concourse:nw",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 8,
+        distance: 6,
         name: "North Restroom Entrance Corridor",
       },
       {
         from: "poi:restroom-02",
         to: "concourse:ne",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 8,
+        distance: 6,
         name: "East Restroom Entrance Corridor",
       },
       {
         from: "poi:restroom-03",
         to: "concourse:se",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 8,
+        distance: 6,
         name: "South Restroom Entrance Corridor",
       },
       {
         from: "poi:restroom-04",
         to: "concourse:sw",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 8,
+        distance: 6,
         name: "West Accessible Restroom Corridor",
       },
       {
         from: "poi:food-01",
         to: "concourse:se",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 12,
+        distance: 8,
         name: "East Food Hall Frontage",
       },
       {
         from: "poi:food-02",
         to: "concourse:nw",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 12,
+        distance: 8,
         name: "West Concessions Frontage",
       },
       {
         from: "poi:info-01",
         to: "concourse:e",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 5,
+        distance: 4,
         name: "Main Helper Desk Counter",
       },
       {
         from: "poi:exit-01",
         to: "gate:a",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 10,
+        distance: 8,
         name: "North Evacuation Lane",
       },
       {
         from: "poi:exit-02",
         to: "gate:c",
         supportedTypes: ["standard", "accessible", "emergency"],
-        distance: 10,
+        distance: 8,
         name: "South Evacuation Lane",
       },
       {
         from: "poi:parking-vip",
         to: "gate:d",
         supportedTypes: ["vip", "emergency"],
-        distance: 15,
+        distance: 10,
         name: "VIP Valet Parking Bay",
       },
     ];

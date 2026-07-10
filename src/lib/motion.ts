@@ -53,6 +53,30 @@ export const transitionSpring: Transition = {
 };
 
 // =============================================================================
+// SEMANTIC TRANSITIONS (PHASE 6)
+// =============================================================================
+
+export const transitionFeedback: Transition = {
+  duration: MOTION_DURATION.feedback / 1000,
+  ease: MOTION_EASING.standard,
+};
+
+export const transitionContext: Transition = {
+  duration: MOTION_DURATION.context / 1000,
+  ease: MOTION_EASING.standard,
+};
+
+export const transitionTransition: Transition = {
+  duration: MOTION_DURATION.transition / 1000,
+  ease: MOTION_EASING.decelerate,
+};
+
+export const transitionHero: Transition = {
+  duration: MOTION_DURATION.hero / 1000,
+  ease: MOTION_EASING.emphasized,
+};
+
+// =============================================================================
 // FADE VARIANTS
 // Opacity transitions for elements appearing and disappearing.
 // =============================================================================

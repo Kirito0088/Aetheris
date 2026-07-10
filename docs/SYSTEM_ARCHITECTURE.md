@@ -2321,4 +2321,93 @@ Together, these documents provide a complete architectural foundation for the im
 
 ---
 
+# Digital Twin — Production Stadium Architecture
+
+> Added in Phase 6 Priority 1.1
+
+## Overview
+
+The Digital Twin's visual layer uses a production GLB model (KOREA Jeju World Cup Stadium 4K, 500K triangles) as its authoritative spatial reference. All coordinates, entity positions, and routing waypoints are derived relative to its geometry.
+
+## Mandatory Architecture
+
+```
+User
+  ↓
+Experience Layer
+  ↓
+Camera System
+  ↓
+Scene Adapter (StadiumSpatialAdapter)
+  ↓
+Visual Stadium (StadiumGLB)
+  ↓
+Invisible Interaction Layer (StadiumInteractionLayer)
+  ↓
+Entity Registry (GLB-anchored positions)
+  ↓
+Routing Engine (Nodes on walkable areas)
+  ↓
+AI Services
+  ↓
+Backend (Future)
+```
+
+## Three-Layer Stadium Composition
+
+```
+StadiumFoundation (composition root)
+  ├── StadiumSpatialAdapter (transforms GLB → routing space)
+  │     └── StadiumGLB (pure visual rendering)
+  └── StadiumInteractionLayer (invisible colliders in routing space)
+```
+
+### Layer 1: Scene Adapter
+
+`StadiumSpatialAdapter` is the **single source of truth** for transforms:
+- Scale: 0.40 (maps 548-unit GLB to ~219-unit routing space)
+- Position: [0, 1.0, 0] (ground alignment)
+- No other system should know how the GLB is transformed
+
+### Layer 2: GLB Rendering
+
+`StadiumGLB` is a pure visual component:
+- Loaded via `useGLTF()` with module-level `preload()`
+- Preserves all PBR materials from the model
+- No business logic, no interaction handling
+- Can be replaced without affecting any other system
+
+### Layer 3: Invisible Interaction
+
+`StadiumInteractionLayer` provides user interaction:
+- Transparent collision meshes positioned to conform to the stadium geometry (stands wrap the seating bowl, gates at actual perimeter)
+- Completely independent of GLB mesh names
+- Handles hover, select, click through `useExperienceDirector`
+- Renders outside the SpatialAdapter (uses routing coordinates directly)
+
+## Configuration
+
+All stadium configuration lives in `stadium-config.ts`:
+- Asset metadata
+- Transform values
+- Bounding boxes
+- Camera profiles (Hero, Landing, Overview, Navigation, Operations, Accessibility, Journey, Emergency)
+- Lighting presets (Match Day, Golden Hour, Morning, Night)
+
+No magic numbers exist outside this file.
+
+## GLB-First Spatial Mapping
+
+In Phase 6 Priority 1.1, the coordinate system was fully adapted to the GLB geometry:
+- **Entity Anchoring**: All gates, zones, and POIs in `entity-definitions.ts` are relocated to align with the actual geometry boundaries.
+- **Routing Graph**: Graph nodes in `GraphBuilder.ts` are moved directly onto walkable concourses (following an elliptical path at 85×78 radius) and entrance paths.
+- **Pointer Event Separation**: Canvas events are isolated using R3F's `eventSource` and `eventPrefix` configuration, preventing clicks on HTML overlays from triggering 3D canvas actions.
+
+## Related Documentation
+
+- [STADIUM_ASSET.md](./STADIUM_ASSET.md) — Detailed GLB analysis and asset documentation
+- [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) — License and attribution information
+
+---
+
 **End of System Architecture**

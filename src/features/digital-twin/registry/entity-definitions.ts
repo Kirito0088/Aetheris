@@ -1,5 +1,29 @@
 import type { SpatialEntityConfig } from "../entities/types";
 
+/**
+ * Entity Definitions — Phase 6 Priority 1.1 GLB-Anchored
+ *
+ * All positions are derived from the verified GLB bounding box analysis.
+ * After the SpatialAdapter applies scale=0.40 and the root Y↔Z swap:
+ *
+ * GLB world coordinates (post-transform):
+ *   X: -110 to +110 (east-west)
+ *   Z: -100 to +100 (north-south)
+ *   Y:   0  to  32  (ground to roof peak)
+ *
+ * The stadium is an oval/elliptical shape wider on X than Z.
+ * The structural frame (mesh 18) reaches the full footprint.
+ * The seating bowl is roughly at Y=4–12 (inner ring).
+ * The roof canopy peaks at Y≈32.
+ *
+ * Gates are placed at the cardinal points of the outer stadium perimeter.
+ * POIs are placed along the concourse ring just inside the outer wall.
+ * Stands occupy the bowl geometry between the pitch and the outer wall.
+ *
+ * These are OPERATIONAL ENTITIES anchored onto the stadium geometry.
+ * They are application metadata — not fake geometry.
+ */
+
 export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
   {
     id: "zone:pitch",
@@ -7,11 +31,11 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     type: "zone",
     position: [0, 0.5, 0],
     shape: "box",
-    dimensions: [100, 1, 60],
-    args: [100, 1, 60],
+    dimensions: [70, 1, 44],
+    args: [70, 1, 44],
     color: "#2f855a",
     metadata: {
-      description: "FIFA World Cup 2026 Regulation Pitch",
+      description: "FIFA World Cup 2026 regulation pitch — Jeju World Cup Stadium",
       capacity: 22,
       securityStatus: "clear",
       accessibilityFeatures: "Level access from underground tunnels",
@@ -21,46 +45,46 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "zone:north-stand",
     name: "North Stand",
     type: "zone",
-    position: [0, 10, -80],
+    position: [0, 8, -58],
     shape: "box",
-    dimensions: [80, 18, 20],
-    args: [80, 18, 20],
+    dimensions: [70, 14, 22],
+    args: [70, 14, 22],
     color: "#2c5282",
     metadata: {
-      description: "General admission seating area and active supporter section",
-      capacity: 18500,
+      description: "General admission seating — north end behind the goal",
+      capacity: 9000,
       securityStatus: "clear",
-      accessibilityFeatures: "Designated wheelchair spaces in Row 10",
+      accessibilityFeatures: "Designated wheelchair spaces in lower rows",
     },
   },
   {
     id: "zone:south-stand",
     name: "South Stand",
     type: "zone",
-    position: [0, 10, 80],
+    position: [0, 8, 58],
     shape: "box",
-    dimensions: [80, 18, 20],
-    args: [80, 18, 20],
+    dimensions: [70, 14, 22],
+    args: [70, 14, 22],
     color: "#2c5282",
     metadata: {
-      description: "General admission seating area and family zone",
-      capacity: 18500,
+      description: "General admission seating — south end family zone",
+      capacity: 9000,
       securityStatus: "clear",
-      accessibilityFeatures: "Designated wheelchair spaces in Row 10",
+      accessibilityFeatures: "Designated wheelchair spaces in lower rows",
     },
   },
   {
     id: "zone:east-stand",
     name: "East Stand",
     type: "zone",
-    position: [80, 10, 0],
+    position: [72, 8, 0],
     shape: "box",
-    dimensions: [20, 18, 80],
-    args: [20, 18, 80],
+    dimensions: [22, 14, 70],
+    args: [22, 14, 70],
     color: "#2c5282",
     metadata: {
       description: "Premium club seating and hospitality suites",
-      capacity: 22000,
+      capacity: 11000,
       securityStatus: "clear",
       accessibilityFeatures: "Elevator access to all tiers",
     },
@@ -69,14 +93,14 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "zone:west-stand",
     name: "West Stand",
     type: "zone",
-    position: [-80, 10, 0],
+    position: [-72, 8, 0],
     shape: "box",
-    dimensions: [20, 18, 80],
-    args: [20, 18, 80],
+    dimensions: [22, 14, 70],
+    args: [22, 14, 70],
     color: "#2c5282",
     metadata: {
       description: "Media center, broadcast suites, and executive seating",
-      capacity: 15000,
+      capacity: 8000,
       securityStatus: "clear",
       accessibilityFeatures: "Full ramp accessibility and tactile flooring",
     },
@@ -85,10 +109,10 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "zone:vip",
     name: "VIP Executive Club",
     type: "zone",
-    position: [-75, 14, 0],
+    position: [-68, 12, 0],
     shape: "box",
-    dimensions: [12, 6, 30],
-    args: [12, 6, 30],
+    dimensions: [10, 4, 24],
+    args: [10, 4, 24],
     color: "#b7791f",
     metadata: {
       description: "Exclusive suite level for FIFA dignitaries and VIP guests",
@@ -101,10 +125,10 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "zone:concourse",
     name: "Main Concourse Ring",
     type: "zone",
-    position: [0, 1.2, 0],
+    position: [0, 1.5, 0],
     shape: "ring",
-    dimensions: [105, 115, 64],
-    args: [105, 115, 64],
+    dimensions: [80, 95, 64],
+    args: [80, 95, 64],
     color: "#4a5568",
     metadata: {
       description: "Circulation area connecting all stands, concessions, and services",
@@ -117,10 +141,10 @@ export const ZONE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "zone:parking",
     name: "North Parking Lot",
     type: "zone",
-    position: [0, 0.05, -150],
+    position: [0, 0.05, -115],
     shape: "box",
-    dimensions: [150, 0.1, 50],
-    args: [150, 0.1, 50],
+    dimensions: [100, 0.1, 20],
+    args: [100, 0.1, 20],
     color: "#718096",
     metadata: {
       description: "Public vehicle parking and rideshare drop-off hub",
@@ -136,63 +160,63 @@ export const GATE_DEFINITIONS: SpatialEntityConfig[] = [
     id: "gate:a",
     name: "Gate A (North Entrance)",
     type: "gate",
-    position: [0, 1, -110],
+    position: [0, 2, -88],
     color: "#319795",
     metadata: {
       status: "open",
       accessibilityRamp: true,
       type: "standard",
-      description: "Main north entry gate serving North Stand and North Parking",
+      description: "Main north entry gate — stadium outer perimeter, north end",
     },
   },
   {
     id: "gate:b",
     name: "Gate B (East Entrance)",
     type: "gate",
-    position: [110, 1, 0],
+    position: [92, 2, 0],
     color: "#319795",
     metadata: {
       status: "open",
       accessibilityRamp: false,
       type: "standard",
-      description: "East entry gate serving East Stand and Club Level",
+      description: "East entry gate — stadium outer perimeter, east side",
     },
   },
   {
     id: "gate:c",
     name: "Gate C (South Entrance)",
     type: "gate",
-    position: [0, 1, 110],
+    position: [0, 2, 88],
     color: "#319795",
     metadata: {
       status: "open",
       accessibilityRamp: true,
       type: "standard",
-      description: "Main south entry gate serving South Stand and public transport hub",
+      description: "Main south entry gate — stadium outer perimeter, south end",
     },
   },
   {
     id: "gate:d",
     name: "Gate D (West Entrance - VIP)",
     type: "gate",
-    position: [-110, 1, 0],
+    position: [-92, 2, 0],
     color: "#d69e2e",
     metadata: {
       status: "restricted",
       accessibilityRamp: true,
       type: "vip",
-      description: "West entry gate reserved for VIPs, media, and stadium operations",
+      description: "West entry gate — VIP, media, and stadium operations",
     },
   },
 ];
 
 export const POI_DEFINITIONS: SpatialEntityConfig[] = [
-  // Medical
+  // Medical — at concourse level near north and south gates
   {
     id: "poi:medical-01",
     name: "First Aid Station 1",
     type: "poi",
-    position: [-20, 1.2, -100],
+    position: [-18, 2, -82],
     metadata: {
       category: "medical",
       status: "operational",
@@ -204,7 +228,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:medical-02",
     name: "First Aid Station 2",
     type: "poi",
-    position: [20, 1.2, 100],
+    position: [18, 2, 82],
     metadata: {
       category: "medical",
       status: "operational",
@@ -212,12 +236,12 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
       description: "Fully staffed medical station with direct ambulance transfer lane",
     },
   },
-  // Restrooms
+  // Restrooms — distributed around the concourse ring
   {
     id: "poi:restroom-01",
     name: "North Concourse Restrooms",
     type: "poi",
-    position: [-40, 1.2, -90],
+    position: [-40, 2, -74],
     metadata: {
       category: "restroom",
       status: "operational",
@@ -229,7 +253,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:restroom-02",
     name: "East Concourse Restrooms",
     type: "poi",
-    position: [90, 1.2, -40],
+    position: [78, 2, -36],
     metadata: {
       category: "restroom",
       status: "operational",
@@ -241,7 +265,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:restroom-03",
     name: "South Concourse Restrooms",
     type: "poi",
-    position: [40, 1.2, 90],
+    position: [40, 2, 74],
     metadata: {
       category: "restroom",
       status: "operational",
@@ -253,7 +277,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:restroom-04",
     name: "West Concourse Restrooms (Accessible)",
     type: "poi",
-    position: [-90, 1.2, 40],
+    position: [-78, 2, 36],
     metadata: {
       category: "restroom",
       status: "operational",
@@ -261,12 +285,12 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
       description: "Priority accessible restrooms with hoist and changing table",
     },
   },
-  // Food Courts
+  // Food Courts — at concourse level between stands
   {
     id: "poi:food-01",
     name: "East Food Hall",
     type: "poi",
-    position: [90, 1.2, 40],
+    position: [78, 2, 36],
     metadata: {
       category: "food-court",
       status: "operational",
@@ -278,7 +302,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:food-02",
     name: "West Concessions",
     type: "poi",
-    position: [-90, 1.2, -40],
+    position: [-78, 2, -36],
     metadata: {
       category: "food-court",
       status: "operational",
@@ -286,12 +310,12 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
       description: "Snack bar and hot meal stands serving West Stand ticket holders",
     },
   },
-  // Elevators
+  // Elevators — at structural cores east and west
   {
     id: "poi:elevator-01",
     name: "West Lift Core A",
     type: "poi",
-    position: [-75, 1.2, 15],
+    position: [-66, 2, 12],
     metadata: {
       category: "elevator",
       status: "operational",
@@ -303,7 +327,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:elevator-02",
     name: "East Lift Core B",
     type: "poi",
-    position: [75, 1.2, -15],
+    position: [66, 2, -12],
     metadata: {
       category: "elevator",
       status: "operational",
@@ -316,7 +340,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:info-01",
     name: "Main Information Desk",
     type: "poi",
-    position: [80, 1.2, 0],
+    position: [72, 2, 0],
     metadata: {
       category: "information",
       status: "operational",
@@ -324,12 +348,12 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
       description: "Tournament helper desk for translation, lost & found, and ticketing issues",
     },
   },
-  // Exits
+  // Exits — just outside the gates
   {
     id: "poi:exit-01",
     name: "North Evacuation Exit",
     type: "poi",
-    position: [0, 1.2, -120],
+    position: [0, 1.5, -96],
     metadata: {
       category: "exit",
       status: "operational",
@@ -341,7 +365,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:exit-02",
     name: "South Evacuation Exit",
     type: "poi",
-    position: [0, 1.2, 120],
+    position: [0, 1.5, 96],
     metadata: {
       category: "exit",
       status: "operational",
@@ -354,7 +378,7 @@ export const POI_DEFINITIONS: SpatialEntityConfig[] = [
     id: "poi:parking-vip",
     name: "VIP Parking Area",
     type: "poi",
-    position: [-130, 0.1, 10],
+    position: [-100, 0.5, 8],
     metadata: {
       category: "parking",
       status: "operational",

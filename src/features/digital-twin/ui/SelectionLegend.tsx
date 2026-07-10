@@ -39,7 +39,6 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
           zonesList.push({ id: node.id, name: node.name });
         }
       } else if (node && node.type === "waypoint") {
-        // Retrieve indirect connections from waypoint segments
         const subEdges = graph.getEdges(node.id);
         subEdges.forEach((subEdge) => {
           const subNode = graph.getNode(subEdge.to);
@@ -83,28 +82,25 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
     if (!selectedId) return [];
     
     const list = [];
-    // If selected is not the first aid station, offer route to First Aid
     if (selectedId !== "poi:medical-01") {
       list.push({
-        label: "First Aid Station 1",
+        label: "First Aid Station",
         endId: "poi:medical-01",
         type: "standard" as const,
         icon: Activity,
       });
     }
-    // If selected is not the emergency exit, offer egress shortcut
     if (selectedId !== "poi:exit-01") {
       list.push({
-        label: "Emergency Egress Route",
+        label: "Emergency Exit",
         endId: "poi:exit-01",
         type: "emergency" as const,
         icon: ShieldAlert,
       });
     }
-    // For VIP access routes
     if (selectedId !== "zone:vip" && selectedEntity?.type === "gate") {
       list.push({
-        label: "VIP Executive Club",
+        label: "VIP Lounge",
         endId: "zone:vip",
         type: "vip" as const,
         icon: Crown,
@@ -131,45 +127,65 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
 
   if (!selectedEntity) {
     return (
-      <div className="flex flex-col items-center justify-center p-6 text-center border border-dashed border-neutral-800 rounded-xl bg-neutral-950/20">
-        <MapPin className="w-5 h-5 text-neutral-600 mb-2" />
-        <p className="text-[11px] text-neutral-500 font-medium font-mono">
-          NO SPATIAL ENTITY SELECTED
+      <div
+        className="flex flex-col items-center justify-center p-6 text-center rounded-xl"
+        style={{
+          background: 'var(--surface-sunken)',
+          border: '1px dashed var(--border-default)',
+        }}
+      >
+        <MapPin className="w-5 h-5 mb-2" style={{ color: 'var(--text-disabled)' }} />
+        <p className="text-[11px] font-semibold" style={{ color: 'var(--text-tertiary)' }}>
+          No Entity Selected
         </p>
-        <p className="text-[9px] text-neutral-600 mt-1 max-w-[200px]">
-          Hover or click on stadium zones, gates, or points of interest to inspect operational details.
+        <p className="text-[10px] mt-1 max-w-[200px] leading-relaxed" style={{ color: 'var(--text-disabled)' }}>
+          Click on stadium zones, columns, or entrances to inspect details.
         </p>
       </div>
     );
   }
 
-  const typeColors = {
-    zone: "bg-blue-950/40 text-blue-400 border-blue-900/50",
-    gate: "bg-teal-950/40 text-teal-400 border-teal-900/50",
-    poi: "bg-purple-950/40 text-purple-400 border-purple-900/50",
-  }[selectedEntity.type];
+  const typeStyle = {
+    zone: { bg: 'hsla(214, 86%, 55%, 0.08)', color: 'var(--brand-blue)' },
+    gate: { bg: 'hsla(160, 84%, 39%, 0.08)', color: 'var(--brand-emerald)' },
+    poi: { bg: 'hsla(270, 60%, 55%, 0.08)', color: 'hsl(270, 60%, 55%)' },
+  }[selectedEntity.type] || { bg: 'var(--surface-sunken)', color: 'var(--text-secondary)' };
 
   return (
     <article
-      className="p-3.5 rounded-xl border border-neutral-800 bg-neutral-950/60 shadow-lg text-white space-y-3"
+      className="p-4 rounded-xl space-y-3"
+      style={{
+        background: 'var(--surface-elevated)',
+        border: '1px solid var(--border-default)',
+        boxShadow: 'var(--elevation-1)',
+        color: 'var(--text-primary)',
+        fontFamily: 'var(--font-sans)',
+      }}
       aria-label={`Spatial Entity Details: ${selectedEntity.name}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">
-          <span className={clsx("inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold tracking-widest uppercase border", typeColors)}>
+          <span
+            className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-bold capitalize"
+            style={{ background: typeStyle.bg, color: typeStyle.color }}
+          >
             {selectedEntity.type}
           </span>
-          <h3 className="text-xs font-semibold text-white leading-tight">
+          <h3 className="text-xs font-semibold leading-tight" style={{ color: 'var(--text-primary)' }}>
             {selectedEntity.name}
           </h3>
-          <code className="text-[9px] text-neutral-500 block font-mono">
+          <code
+            className="text-[9px] block"
+            style={{ color: 'var(--text-disabled)', fontFamily: 'var(--font-mono)' }}
+          >
             {selectedEntity.id}
           </code>
         </div>
         <button
           onClick={() => setSelectedId(null)}
-          className="text-neutral-500 hover:text-white p-1 rounded-md hover:bg-neutral-900 transition-colors focus:outline-none"
+          className="p-1 rounded-lg transition-colors cursor-pointer"
+          style={{ color: 'var(--text-disabled)' }}
           aria-label="Close details"
         >
           <X className="w-3.5 h-3.5" />
@@ -177,24 +193,24 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
       </div>
 
       {/* Description */}
-      <p className="text-[10px] text-neutral-400 leading-relaxed font-normal">
-        {selectedEntity.metadata.description || "No operational description provided."}
+      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+        {selectedEntity.metadata.description || "No description available."}
       </p>
 
-      {/* Reusable Metadata Table (No Hardcoding) */}
-      <div className="border-t border-neutral-900 pt-2.5">
-        <h4 className="text-[9px] font-bold text-neutral-500 uppercase font-mono tracking-wider mb-1.5">
-          Operational Metadata
+      {/* Metadata */}
+      <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
+        <h4 className="text-[9px] font-semibold mb-1.5" style={{ color: 'var(--text-tertiary)' }}>
+          Details
         </h4>
         <div className="space-y-1.5">
           {Object.entries(selectedEntity.metadata)
             .filter(([key]) => key !== "description")
             .map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center text-[10px]">
-                <span className="text-neutral-500 font-normal capitalize">
+              <div key={key} className="flex justify-between items-center text-[11px]">
+                <span className="capitalize" style={{ color: 'var(--text-tertiary)' }}>
                   {key.replace(/([A-Z])/g, " $1")}
                 </span>
-                <span className="text-neutral-300 font-mono text-right">
+                <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                   {typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)}
                 </span>
               </div>
@@ -202,66 +218,85 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
         </div>
       </div>
 
-      {/* Spatial Relationships Section */}
-      <div className="border-t border-neutral-900 pt-2.5 space-y-2">
-        <h4 className="text-[9px] font-bold text-neutral-500 uppercase font-mono tracking-wider">
-          Spatial Relationships
+      {/* Spatial Relationships */}
+      <div className="space-y-2.5" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
+        <h4 className="text-[9px] font-semibold" style={{ color: 'var(--text-tertiary)' }}>
+          Connections
         </h4>
 
         {/* Connected Zones */}
-        <div className="text-[10px]">
-          <span className="text-neutral-500 block font-mono text-[8px] uppercase">Connected Zones:</span>
+        <div className="text-[11px]">
+          <span className="block mb-1" style={{ color: 'var(--text-tertiary)' }}>Adjacent Zones</span>
           {connectedZones.length > 0 ? (
-            <div className="flex flex-wrap gap-1 mt-1">
+            <div className="flex flex-wrap gap-1">
               {connectedZones.map((z) => (
                 <button
                   key={z.id}
                   onClick={() => setSelectedId(z.id)}
-                  className="bg-neutral-900 hover:bg-neutral-850 hover:text-white border border-neutral-800 text-neutral-300 px-1.5 py-0.5 rounded text-[8px] font-mono transition-all"
+                  className={clsx(
+                    "px-2 py-0.5 rounded-full text-[9px] font-medium transition-all cursor-pointer"
+                  )}
+                  style={{
+                    background: 'var(--surface-sunken)',
+                    border: '1px solid var(--border-default)',
+                    color: 'var(--text-secondary)',
+                  }}
                 >
                   {z.name}
                 </button>
               ))}
             </div>
           ) : (
-            <span className="text-neutral-600 block mt-0.5 italic">No local stand connections</span>
+            <span className="italic text-[10px]" style={{ color: 'var(--text-disabled)' }}>No connections</span>
           )}
         </div>
 
         {/* Nearby POIs */}
-        <div className="text-[10px]">
-          <span className="text-neutral-500 block font-mono text-[8px] uppercase">Nearby Services (50m):</span>
+        <div className="text-[11px]">
+          <span className="block mb-1" style={{ color: 'var(--text-tertiary)' }}>Nearby Services</span>
           {nearbyPOIs.length > 0 ? (
-            <div className="space-y-1 mt-1">
+            <div className="space-y-1">
               {nearbyPOIs.map((poi) => (
-                <div key={poi.id} className="flex justify-between items-center bg-neutral-900/40 p-1 border border-neutral-900 rounded">
+                <div
+                  key={poi.id}
+                  className="flex justify-between items-center p-1.5 rounded-lg"
+                  style={{ background: 'var(--surface-sunken)' }}
+                >
                   <button
                     onClick={() => setSelectedId(poi.id)}
-                    className="text-neutral-300 hover:text-white font-medium text-left truncate max-w-[170px]"
+                    className="font-medium text-left truncate max-w-[170px] cursor-pointer"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
                     {poi.name}
                   </button>
-                  <span className="text-neutral-500 font-mono text-[9px]">{poi.distance}m</span>
+                  <span style={{ color: 'var(--text-disabled)', fontFamily: 'var(--font-mono)', fontSize: '9px' }}>
+                    {poi.distance}m
+                  </span>
                 </div>
               ))}
             </div>
           ) : (
-            <span className="text-neutral-600 block mt-0.5 italic">No nearby services</span>
+            <span className="italic text-[10px]" style={{ color: 'var(--text-disabled)' }}>None nearby</span>
           )}
         </div>
 
-        {/* Dynamic Navigation Shortcuts */}
+        {/* Route Shortcuts */}
         {shortcuts.length > 0 && (
-          <div className="text-[10px] space-y-1">
-            <span className="text-neutral-500 block font-mono text-[8px] uppercase">Quick Dispatch Routes:</span>
-            <div className="grid grid-cols-2 gap-1.5 mt-1">
+          <div className="text-[11px] space-y-1">
+            <span className="block mb-1" style={{ color: 'var(--text-tertiary)' }}>Quick Routes</span>
+            <div className="grid grid-cols-2 gap-1.5">
               {shortcuts.map((sh, idx) => {
                 const Icon = sh.icon;
                 return (
                   <button
                     key={idx}
                     onClick={() => handleShortcutRoute(sh.endId, sh.type)}
-                    className="flex items-center space-x-1 p-1 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/20 rounded text-[8px] font-medium transition-all text-left"
+                    className="flex items-center gap-1 p-1.5 rounded-lg text-[9px] font-medium transition-all text-left cursor-pointer"
+                    style={{
+                      background: 'hsla(214, 86%, 55%, 0.06)',
+                      border: '1px solid hsla(214, 86%, 55%, 0.12)',
+                      color: 'var(--brand-blue)',
+                    }}
                   >
                     <Icon className="w-3 h-3 flex-shrink-0" />
                     <span className="truncate">{sh.label}</span>
@@ -273,14 +308,19 @@ export const SelectionLegend = React.memo(function SelectionLegend() {
         )}
       </div>
 
-      {/* Focus Camera Actions */}
-      <div className="flex pt-1 border-t border-neutral-900">
+      {/* Focus Camera */}
+      <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '4px' }}>
         <button
           onClick={handleZoom}
-          className="w-full flex items-center justify-center space-x-1.5 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white border border-neutral-800 rounded-lg text-[10px] font-semibold transition-all focus:outline-none focus:ring-1 focus:ring-blue-500/50"
+          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-semibold transition-all cursor-pointer"
+          style={{
+            background: 'var(--surface-sunken)',
+            border: '1px solid var(--border-default)',
+            color: 'var(--text-secondary)',
+          }}
         >
           <Maximize2 className="w-3 h-3" />
-          <span>Focus Camera Viewport</span>
+          <span>Focus Camera</span>
         </button>
       </div>
     </article>

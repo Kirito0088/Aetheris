@@ -21,7 +21,7 @@ export const LayerManager = React.memo(function LayerManager() {
   return (
     <section className="space-y-4" aria-label="Layer Controls">
       <div>
-        <h3 className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2 px-1">
+        <h3 className="text-[10px] font-semibold mb-2 px-1" style={{ color: 'var(--text-tertiary)' }}>
           Infrastructure
         </h3>
         <div className="space-y-1">
@@ -39,7 +39,7 @@ export const LayerManager = React.memo(function LayerManager() {
       </div>
 
       <div>
-        <h3 className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2 px-1">
+        <h3 className="text-[10px] font-semibold mb-2 px-1" style={{ color: 'var(--text-tertiary)' }}>
           Spatial Intelligence
         </h3>
         <div className="space-y-1">
@@ -57,7 +57,7 @@ export const LayerManager = React.memo(function LayerManager() {
       </div>
 
       <div>
-        <h3 className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2 px-1">
+        <h3 className="text-[10px] font-semibold mb-2 px-1" style={{ color: 'var(--text-tertiary)' }}>
           Helpers & Tools
         </h3>
         <div className="space-y-1">
