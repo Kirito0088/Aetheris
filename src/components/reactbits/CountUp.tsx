@@ -1,5 +1,6 @@
 import { useInView, useMotionValue, useSpring } from 'framer-motion';
 import { useCallback, useEffect, useRef } from 'react';
+import { formatNumberWithOptions } from '@/utils/format';
 
 interface CountUpProps {
   to: number;
@@ -62,7 +63,7 @@ export default function CountUp({
         maximumFractionDigits: hasDecimals ? maxDecimals : 0
       };
 
-      const formattedNumber = Intl.NumberFormat('en-US', options).format(latest);
+      const formattedNumber = formatNumberWithOptions(latest, options);
 
       return separator ? formattedNumber.replace(/,/g, separator) : formattedNumber;
     },

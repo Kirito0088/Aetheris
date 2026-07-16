@@ -22,7 +22,7 @@
  * - Primary: Inter  ·  Monospace: JetBrains Mono  ·  Fallback: system-ui
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Fonts are imported via next/font in layout.tsx */
 
 @import "tailwindcss";
 
@@ -67,8 +67,9 @@
   --color-ai-prediction: var(--ai-prediction);
   --color-ai-insight: var(--ai-insight);
   
-  --font-sans: var(--font-inter, "Inter"), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), "Fira Code", monospace;
+  --font-sans: var(--font-geist, "Geist"), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono, "Geist Mono"), "Fira Code", monospace;
+  --font-serif: var(--font-playfair, "Playfair Display"), Georgia, serif;
 
   --radius-none: var(--radius-none);
   --radius-sm: var(--radius-sm);
@@ -227,8 +228,9 @@
     /* ------------------------------------------------------------------ */
     /* TYPOGRAPHY TOKENS                                                  */
     /* ------------------------------------------------------------------ */
-    --font-sans: var(--font-inter, "Inter"), system-ui, -apple-system, sans-serif;
-    --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), "Fira Code", monospace;
+    --font-sans: var(--font-geist, "Geist"), system-ui, -apple-system, sans-serif;
+    --font-mono: var(--font-geist-mono, "Geist Mono"), "Fira Code", monospace;
+    --font-serif: var(--font-playfair, "Playfair Display"), Georgia, serif;
 
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;

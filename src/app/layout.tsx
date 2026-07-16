@@ -14,28 +14,33 @@
  */
 
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { Providers } from "@/providers";
 import "@/styles/globals.css";
 
 // =============================================================================
 // FONT CONFIGURATION
-// Inter (primary) and JetBrains Mono (monospace) — from DESIGN_TOKENS.md.
-// Using next/font for performance — automatic subsetting and self-hosting.
 // =============================================================================
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-geist",
   weight: ["400", "500", "600", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-jetbrains-mono",
+  variable: "--font-geist-mono",
   weight: ["400", "500"],
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
 });
 
 // =============================================================================
@@ -44,11 +49,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Aetheris — AI-powered Spatial Intelligence Platform",
+    default: "Aetheris — Operational Intelligence for FIFA 2026",
     template: "%s | Aetheris",
   },
   description:
-    "Aetheris transforms every stadium into a living digital twin that thinks, predicts, and guides in real time.",
+    "Aetheris is the official operational intelligence platform for FIFA World Cup 2026. The invisible nervous system protecting and orchestrating humanity's largest event.",
   keywords: [
     "stadium intelligence",
     "spatial intelligence",
@@ -60,7 +65,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Team Aetheris" }],
   creator: "Team Aetheris",
   robots: {
-    index: false, // Not yet production-ready for indexing
+    index: false,
     follow: false,
   },
 };
@@ -68,7 +73,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAF8F4", // Matches --surface-base (warm white, Neutral-50)
+  themeColor: "#FAF8F4",
 };
 
 // =============================================================================
@@ -84,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${playfair.variable}`}
     >
       <body>
         <Providers>{children}</Providers>

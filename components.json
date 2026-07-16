@@ -19,6 +19,12 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@reactbits": "https://reactbits.dev/r/{name}"
+    "@reactbits": "https://reactbits.dev/r/{name}",
+    "@aceternity": {
+      "url": "https://ui.aceternity.com/registry/{name}.json",
+      "headers": {
+        "Authorization": "Bearer aceternity_07721a75796d7ae030a939c1b065bcd8ffc4499e53300cf5c4ef612b1eea5043"
+      }
+    }
   }
 }
