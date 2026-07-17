@@ -7,6 +7,7 @@ import { Home, Map, Users, AlertTriangle } from "lucide-react";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { MOTION_TIMINGS, MOTION_EASINGS } from "@/features/experience";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
 const venueOperationsItems = [
   { name: "Dashboard", href: "/venue-operations", icon: Home },
@@ -114,15 +115,9 @@ export function Sidebar({ _persona }: { _persona?: 'venue-operations' }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: MOTION_TIMINGS.transition / 1000 }}
-        className="px-6 mt-auto"
+        className="px-3 mt-auto"
       >
-        <div className="flex items-center gap-3 px-3 py-2 rounded-md bg-surface-sunken border border-border-subtle/50">
-          <div className="relative flex items-center justify-center w-2 h-2">
-            <span className="absolute w-full h-full rounded-full bg-brand-emerald opacity-40 animate-ping" />
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald" />
-          </div>
-          <span className="text-[length:var(--font-size-xs)] font-medium text-text-secondary">System Normal</span>
-        </div>
+        <SignOutButton variant="sidebar" />
       </motion.div>
     </motion.aside>
   );

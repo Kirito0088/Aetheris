@@ -4,57 +4,85 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import clsx from "clsx";
-import { Home, Map, Accessibility, ClipboardList, Languages } from "lucide-react";
+import { Home, Map as MapIcon, Ticket, Compass, BookOpen } from "lucide-react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
-interface BottomNavProps {
-  persona: 'fan' | 'volunteer';
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
-export function BottomNav({ persona }: BottomNavProps) {
+/* Navigation items per persona — max 4 to leave room for the sign-out item. */
+const NAV_CONFIGS: Record<string, { href: string; icon: typeof Home; label: string }[]> = {
+  fan: [
+    { href: "/fan", icon: Home, label: "Home" },
+    { href: "/fan/map", icon: MapIcon, label: "Map" },
+    { href: "/fan/tickets", icon: Ticket, label: "Tickets" },
+    { href: "/fan/guide", icon: Compass, label: "Guide" },
+  ],
+  volunteer: [
+    { href: "/volunteer", icon: Home, label: "Home" },
+    { href: "/volunteer/guide", icon: BookOpen, label: "Guide" },
+    { href: "/volunteer/translate", icon: Compass, label: "Translate" },
+  ],
+};
+
+export function BottomNav({ persona = "fan" }: { persona?: string }) {
   const pathname = usePathname();
-
-  const fanItems = [
-    { label: "Home", href: "/fan", icon: Home },
-    { label: "Guide", href: "/fan/guide", icon: Map },
-    { label: "Amenities", href: "/fan/amenities", icon: Accessibility },
-  ];
-
-  const volunteerItems = [
-    { label: "Tasks", href: "/volunteer", icon: ClipboardList },
-    { label: "Guide", href: "/volunteer/guide", icon: Map },
-    { label: "Translate", href: "/volunteer/translate", icon: Languages },
-  ];
-
-  const items = persona === 'fan' ? fanItems : volunteerItems;
+  const navItems = NAV_CONFIGS[persona] ?? NAV_CONFIGS.fan!;
+  const basePath = persona === "volunteer" ? "/volunteer" : "/fan";
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--surface-elevated)] border-t border-[var(--border-subtle)] pb-safe-bottom">
-      <div className="flex items-center justify-around px-2 h-16">
-        {items.map((item) => {
-          const isActive = pathname === item.href || (item.href !== `/${persona}` && pathname.startsWith(item.href));
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2 bg-gradient-to-t from-surface-base via-surface-base/80 to-transparent pointer-events-none md:hidden">
+      <nav aria-label={`${persona} portal`} className="mx-auto max-w-md flex items-center justify-around bg-surface-glass-strong backdrop-blur-xl border border-border-subtle shadow-elevation-2 rounded-full px-2 py-2 pointer-events-auto">
+        {navItems.map((item) => {
+          const isActive =
+            pathname === item.href ||
+            (pathname.startsWith(item.href) && item.href !== basePath);
+          const Icon = item.icon;
+
           return (
             <Link
-              key={item.label}
+              key={item.href}
               href={item.href}
-              className={clsx(
-                "flex flex-col items-center justify-center w-full h-full space-y-1 relative",
-                isActive ? "text-[var(--brand-blue)]" : "text-[var(--text-secondary)]"
-              )}
+              aria-current={isActive ? "page" : undefined}
+              aria-label={item.label}
+              className="relative flex flex-col items-center justify-center w-14 h-12"
             >
+              {/* Active Bubble (Framer Motion Layout ID) */}
               {isActive && (
                 <motion.div
-                  layoutId="bottom-nav-indicator"
-                  className="absolute top-0 w-12 h-1 bg-[var(--brand-blue)] rounded-b-full"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  layoutId="bottomNavBubble"
+                  className="absolute inset-0 bg-nav-selected rounded-full"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
-              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
-              <span className="text-[10px] font-medium">{item.label}</span>
+
+              <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+                <Icon
+                  className={cn(
+                    "w-5 h-5 transition-colors duration-300",
+                    isActive ? "text-nav-active" : "text-text-tertiary group-hover:text-text-secondary"
+                  )}
+                  strokeWidth={isActive ? 2.5 : 2}
+                />
+                <span
+                  className={cn(
+                    "text-[10px] font-medium tracking-tight transition-all duration-300",
+                    isActive ? "text-nav-active opacity-100" : "text-text-tertiary opacity-0 h-0"
+                  )}
+                >
+                  {item.label}
+                </span>
+              </div>
             </Link>
           );
         })}
-      </div>
-    </nav>
+
+        {/* Sign-Out — always the last item */}
+        <SignOutButton variant="nav" />
+      </nav>
+    </div>
   );
 }

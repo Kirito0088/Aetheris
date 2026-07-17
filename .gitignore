@@ -46,3 +46,8 @@ next-env.d.ts
 .idea/
 *.swp
 *.swo
+
+# Secret scripts
+check-profiles.mjs
+create-user.mjs
+create-user2.mjs

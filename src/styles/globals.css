@@ -172,7 +172,8 @@
     /* ------------------------------------------------------------------ */
     --text-primary: var(--color-neutral-950);          /* ink */
     --text-secondary: var(--color-neutral-700);
-    --text-tertiary: var(--color-neutral-500);
+    /* Neutral 600 preserves at least 4.5:1 contrast on the light surfaces. */
+    --text-tertiary: var(--color-neutral-600);
     --text-disabled: var(--color-neutral-400);
     --text-inverse: var(--color-neutral-0);            /* text on dark/brand */
     --text-brand: var(--color-blue-600);
@@ -485,6 +486,12 @@
 @keyframes aetheris-sheen {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+/* Spinner rotation for loading states */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .scrollbar-none {

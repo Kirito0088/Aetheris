@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import { useExperienceDirector, MOTION_TIMINGS, MOTION_EASINGS } from "@/features/experience";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
 interface HeaderProps {
   title: string;
@@ -43,6 +44,8 @@ export function Header({ title }: HeaderProps) {
         >
           {audioEnabled ? <Volume2 className="w-[18px] h-[18px] text-brand-blue" /> : <VolumeX className="w-[18px] h-[18px]" />}
         </button>
+
+        <SignOutButton variant="header" />
 
         <div className="flex items-center gap-2 h-8 px-3 rounded-md bg-state-success/10 border border-state-success/20 text-state-success">
           <span className="w-2 h-2 rounded-full bg-state-success animate-pulse" />

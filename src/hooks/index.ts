@@ -5,5 +5,5 @@
  * Feature-specific hooks belong inside their respective feature directories.
  */
 
-// Hooks will be added here as they are created in Phase 2.
-// Example: export { useVenueZone } from "./use-venue-zone";
+export { useRealtimeIncidents } from "./useRealtimeIncidents";
+export { useRealtimeZones } from "./useRealtimeZones";

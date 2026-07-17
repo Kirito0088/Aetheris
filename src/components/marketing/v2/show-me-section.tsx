@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Maximize, Navigation2, Star, MessageCircle } from "lucide-react";
+import { Maximize, Navigation2, Star } from "lucide-react";
 
 export function ShowMeSection() {
   return (

@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@supabase/ssr": "0.12.3",
+    "@supabase/supabase-js": "2.110.7",
     "@tanstack/react-query": "^5.101.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
@@ -46,6 +48,9 @@
     "lint": "eslint src/ --ext .ts,.tsx",
     "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
+    "seed:personas": "node scripts/seed-personas.mjs",
+    "test:e2e:fan-state": "node scripts/create-e2e-fan-state.mjs",
+    "test:e2e": "playwright test",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   }

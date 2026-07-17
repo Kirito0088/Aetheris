@@ -31,14 +31,14 @@ export function FooterPortal() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           className="mt-16 flex flex-col gap-4 sm:flex-row"
         >
-          <button className="group relative flex h-14 items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-8 text-base font-medium text-[#111111] transition-transform hover:scale-105 active:scale-95">
+          <Link href="/experience" className="group relative flex h-14 items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-8 text-base font-medium text-[#111111] transition-transform hover:scale-105 active:scale-95">
             <span className="relative z-10">Request Access</span>
             <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
+          </Link>
           
-          <button className="group relative flex h-14 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-8 text-base font-medium text-white transition-colors hover:bg-white/5 active:scale-95">
+          <Link href="/experience" className="group relative flex h-14 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-8 text-base font-medium text-white transition-colors hover:bg-white/5 active:scale-95">
             Enterprise Demo
-          </button>
+          </Link>
         </motion.div>
       </div>
       

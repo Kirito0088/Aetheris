@@ -59,9 +59,9 @@ export function Navigation() {
               {link.label}
             </Link>
           ))}
-          <button className="text-sm font-semibold text-white bg-[var(--text-primary)] px-5 py-2 rounded-full hover:bg-black transition-colors">
+          <Link href="/experience" className="text-sm font-semibold text-white bg-[var(--text-primary)] px-5 py-2 rounded-full hover:bg-black transition-colors">
             Enter Platform
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Hamburger */}
@@ -139,9 +139,9 @@ export function Navigation() {
                 }}
                 className="mt-4"
               >
-                <button className="text-lg font-semibold text-white bg-[var(--text-primary)] px-8 py-4 rounded-full w-full">
+                <Link href="/experience" onClick={() => setIsOpen(false)} className="inline-block text-center text-lg font-semibold text-white bg-[var(--text-primary)] px-8 py-4 rounded-full w-full">
                   Enter Platform
-                </button>
+                </Link>
               </motion.div>
             </div>
           </motion.div>

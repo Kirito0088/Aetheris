@@ -1,23 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 
-const MotionLink = motion.create(Link);
+
 
 export function FluidNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>
@@ -42,17 +33,17 @@ export function FluidNav() {
           </div>
 
           <div className="flex items-center gap-2">
-            <MotionLink
-              href="/experience"
-              whileHover="hover"
-              whileTap={{ scale: 0.98 }}
-              className="group relative flex items-center gap-2 rounded-full bg-[#111111] pl-5 pr-1.5 py-1.5 text-sm font-medium text-white transition-colors"
-            >
-              <span>Enter Platform</span>
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform group-hover:bg-white/20">
-                <ArrowRight className="h-3.5 w-3.5" />
-              </div>
-            </MotionLink>
+            <motion.div whileHover="hover" whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/experience"
+                className="group relative flex items-center gap-2 rounded-full bg-[#111111] pl-5 pr-1.5 py-1.5 text-sm font-medium text-white transition-colors"
+              >
+                <span>Enter Platform</span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform group-hover:bg-white/20">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </div>
+              </Link>
+            </motion.div>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
