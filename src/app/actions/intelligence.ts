@@ -54,7 +54,7 @@ interface IncidentInput {
 }
 
 /** Strip characters that could be used for prompt injection. */
-function sanitizeInput(input: string, maxLength = 500): string {
+export function sanitizeInput(input: string, maxLength = 500): string {
   return input
     // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "") // control chars
