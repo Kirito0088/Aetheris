@@ -136,6 +136,9 @@ export default function FanLoginPage() {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback?next=/fan`,
+          queryParams: {
+            prompt: "select_account",
+          },
         },
       });
 
