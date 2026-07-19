@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useFanExperienceStore } from "@/store/useFanExperienceStore";
 import { InteractiveStadiumMap } from "@/components/ui/InteractiveStadiumMap";
 import { ArrowRight, MapPin, Ticket, Sparkles, Navigation } from "lucide-react";
@@ -8,10 +8,73 @@ import { motion, type Variants } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { SmartWayfindingBanner } from "@/components/shared/SmartWayfindingBanner";
+import { createClient } from "@/lib/supabase/client";
 
 export default function FanPage() {
-  const { ticket, alerts, dismissAlert } = useFanExperienceStore();
+  const { ticket, alerts, dismissAlert, setTicket, setAlerts } = useFanExperienceStore();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const supabase = createClient();
+    
+    const fetchFanData = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData?.user) return;
+      
+      const userId = authData.user.id;
+
+      // Fetch ticket
+      const { data: ticketsData } = await supabase
+        .from("tickets")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (ticketsData && ticketsData.length > 0) {
+        const t = ticketsData[0]!;
+        setTicket({
+          match: t.match_name,
+          date: new Date(t.match_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
+          gate: t.gate,
+          sector: t.sector,
+          row: t.row,
+          seat: t.seat,
+          kickoffTime: t.kickoff_time,
+        });
+      }
+
+      // Fetch alerts
+      const { data: alertsData } = await supabase
+        .from("alerts")
+        .select("*")
+        .eq("target_user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (alertsData) {
+        setAlerts(alertsData.map(a => ({
+          id: a.id,
+          title: a.title,
+          description: a.description,
+          type: a.type as "routing" | "info" | "urgent",
+          actionLabel: a.action_label || undefined
+        })));
+      }
+    };
+
+    fetchFanData();
+
+    // Subscribe to alerts
+    const channel = supabase.channel('fan-alerts')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' }, () => {
+        fetchFanData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [setTicket, setAlerts]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },

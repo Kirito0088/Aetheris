@@ -67,9 +67,9 @@
   --color-ai-prediction: var(--ai-prediction);
   --color-ai-insight: var(--ai-insight);
   
-  --font-sans: var(--font-geist, "Geist"), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono, "Geist Mono"), "Fira Code", monospace;
-  --font-serif: var(--font-playfair, "Playfair Display"), Georgia, serif;
+  --font-sans: var(--font-sans, "Inter"), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono, "JetBrains Mono"), "Fira Code", monospace;
+  --font-serif: var(--font-display, "Space Grotesk"), Georgia, serif;
 
   --radius-none: var(--radius-none);
   --radius-sm: var(--radius-sm);
@@ -229,9 +229,9 @@
     /* ------------------------------------------------------------------ */
     /* TYPOGRAPHY TOKENS                                                  */
     /* ------------------------------------------------------------------ */
-    --font-sans: var(--font-geist, "Geist"), system-ui, -apple-system, sans-serif;
-    --font-mono: var(--font-geist-mono, "Geist Mono"), "Fira Code", monospace;
-    --font-serif: var(--font-playfair, "Playfair Display"), Georgia, serif;
+    --font-sans: var(--font-sans, "Inter"), system-ui, -apple-system, sans-serif;
+    --font-mono: var(--font-mono, "JetBrains Mono"), "Fira Code", monospace;
+    --font-serif: var(--font-display, "Space Grotesk"), Georgia, serif;
 
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
@@ -519,9 +519,9 @@
 @layer base {
   :root {
     /* --- STITCH FONT ALIASES (map to next/font CSS variables) --- */
-    --font-headline: var(--font-space-grotesk, "Space Grotesk"), system-ui, sans-serif;
-    --font-body: var(--font-inter, "Inter"), system-ui, sans-serif;
-    --font-data: var(--font-jetbrains-mono, "JetBrains Mono"), "Fira Code", monospace;
+    --font-headline: var(--font-display, "Space Grotesk"), system-ui, sans-serif;
+    --font-body: var(--font-sans, "Inter"), system-ui, sans-serif;
+    --font-data: var(--font-mono, "JetBrains Mono"), "Fira Code", monospace;
 
     /* --- STITCH COLOR TOKENS (warm stone palette) --- */
     --stitch-stone-200: #E5E5E2;

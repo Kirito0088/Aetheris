@@ -82,7 +82,7 @@ export default function ExperienceLoading() {
       <p
         style={{
           fontSize: "0.8125rem",
-          fontFamily: "var(--font-geist-mono, monospace)",
+          fontFamily: "var(--font-mono, monospace)",
           color: "var(--text-tertiary, hsl(30, 8%, 52%))",
           letterSpacing: "0.08em",
           textTransform: "uppercase",

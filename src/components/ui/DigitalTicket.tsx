@@ -4,6 +4,7 @@ import React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Ticket, MapPin, ScanLine } from "lucide-react";
 import { type DBTicket } from "@/store/useDatabaseStore";
+import { useMotionSafe } from "@/hooks/useMotionSafe";
 
 interface DigitalTicketProps {
   ticket: DBTicket;
@@ -11,6 +12,7 @@ interface DigitalTicketProps {
 }
 
 export function DigitalTicket({ ticket, onClick }: DigitalTicketProps) {
+  const { shouldReduce } = useMotionSafe();
   // Mouse tracking for the holographic tilt effect
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
@@ -34,9 +36,13 @@ export function DigitalTicket({ ticket, onClick }: DigitalTicketProps) {
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      style={{ rotateX, rotateY, perspective: 1000 }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      aria-label={`View ticket for ${ticket.match}`}
+      whileHover={shouldReduce ? undefined : { scale: 1.02 }}
+      whileTap={shouldReduce ? undefined : { scale: 0.98 }}
+      style={shouldReduce ? { perspective: 1000 } : { rotateX, rotateY, perspective: 1000 }}
       className="relative w-full max-w-sm mx-auto cursor-pointer rounded-[32px] bg-surface-elevated shadow-elevation-3 border border-border-subtle overflow-hidden"
     >
       {/* 21st dev / Aceternity inspired holographic sheen overlay */}

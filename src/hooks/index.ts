@@ -7,3 +7,4 @@
 
 export { useRealtimeIncidents } from "./useRealtimeIncidents";
 export { useRealtimeZones } from "./useRealtimeZones";
+export { useMotionSafe } from "./useMotionSafe";

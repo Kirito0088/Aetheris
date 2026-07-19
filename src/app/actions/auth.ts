@@ -3,20 +3,30 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Enums } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 type PortalRole = Extract<Enums<"user_role">, "volunteer" | "venue_operator">;
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(1, "Password is required."),
+});
 
 export async function loginWithRole(
   formData: FormData,
   expectedRole: PortalRole,
   redirectPath: string,
 ) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const parsed = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-  if (!email || !password) {
-    return { error: "Email and password are required." };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
+
+  const { email, password } = parsed.data;
 
   const supabase = await createClient();
 

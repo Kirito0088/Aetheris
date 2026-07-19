@@ -5,6 +5,7 @@ import { Check, ChevronDown, Globe } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { type Language, useLanguage } from "@/context/LanguageContext";
+import { useMotionSafe } from "@/hooks/useMotionSafe";
 
 const LANGUAGES: { code: Language; label: string; short: string }[] = [
   { code: "en", label: "English", short: "EN" },
@@ -14,6 +15,7 @@ const LANGUAGES: { code: Language; label: string; short: string }[] = [
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
+  const { shouldReduce } = useMotionSafe();
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -112,31 +114,34 @@ export function LanguageSwitcher() {
             id={listboxId}
             role="listbox"
             aria-label="Available languages"
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, ...(shouldReduce ? {} : { y: -10, scale: 0.95 }) }}
+            animate={{ opacity: 1, ...(shouldReduce ? {} : { y: 0, scale: 1 }) }}
+            exit={{ opacity: 0, ...(shouldReduce ? {} : { y: -10, scale: 0.95 }) }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="absolute right-0 top-full z-50 mt-2 w-40 overflow-hidden rounded-xl border border-border-default bg-surface-elevated py-1 shadow-elevation-3"
           >
             {LANGUAGES.map((item, index) => {
               const isSelected = item.code === language;
               return (
-                <button
+                <li
                   key={item.code}
                   id={`${listboxId}-option-${index}`}
-                  type="button"
                   role="option"
                   aria-selected={isSelected}
-                  data-testid={`language-option-${item.code}`}
-                  onClick={() => selectLanguage(item.code)}
-                  onMouseEnter={() => setFocusedIndex(index)}
-                  className={`flex w-full items-center justify-between px-4 py-2 text-left text-[length:var(--font-size-sm)] transition-colors focus:outline-none ${
-                    focusedIndex === index ? "bg-nav-hover" : ""
-                  } ${isSelected ? "font-bold text-brand-blue" : "font-medium text-text-primary"}`}
                 >
-                  {item.label}
-                  {isSelected && <Check className="h-4 w-4 text-brand-blue" aria-hidden="true" />}
-                </button>
+                  <button
+                    type="button"
+                    data-testid={`language-option-${item.code}`}
+                    onClick={() => selectLanguage(item.code)}
+                    onMouseEnter={() => setFocusedIndex(index)}
+                    className={`flex w-full items-center justify-between px-4 py-2 text-left text-[length:var(--font-size-sm)] transition-colors focus:outline-none ${
+                      focusedIndex === index ? "bg-nav-hover" : ""
+                    } ${isSelected ? "font-bold text-brand-blue" : "font-medium text-text-primary"}`}
+                  >
+                    {item.label}
+                    {isSelected && <Check className="h-4 w-4 text-brand-blue" aria-hidden="true" />}
+                  </button>
+                </li>
               );
             })}
           </motion.ul>

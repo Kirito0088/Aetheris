@@ -37,6 +37,8 @@ interface FanExperienceState {
   setActiveZone: (id: string | null) => void;
   updateZoneDensity: (id: string, density: CrowdDensity) => void;
   dismissAlert: (id: string) => void;
+  setTicket: (ticket: DigitalTicket) => void;
+  setAlerts: (alerts: FanAlert[]) => void;
 }
 
 // Initial mock data for Estadio Azteca Fan Experience
@@ -88,5 +90,8 @@ export const useFanExperienceStore = create<FanExperienceState>((set) => ({
   
   dismissAlert: (id) => set((state) => ({
     alerts: state.alerts.filter(alert => alert.id !== id)
-  }))
+  })),
+
+  setTicket: (ticket) => set({ ticket }),
+  setAlerts: (alerts) => set({ alerts })
 }));

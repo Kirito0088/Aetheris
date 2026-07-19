@@ -1,16 +1,27 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useDatabaseStore } from "@/store/useDatabaseStore";
 import { CheckCircle, MapPin, Navigation, Plus, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { IncidentDrawer } from "@/components/ui/IncidentDrawer";
 import { useRealtimeZones } from "@/hooks";
 import { createClient } from "@/lib/supabase/client";
 
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+  status: "pending" | "active" | "completed";
+  assigned_to: string | null;
+  created_at: string;
+}
+
 export default function VolunteerPage() {
-  const { tasks, completeTask, acceptTask } = useDatabaseStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Fetch Supabase zones for the reporting dropdown
   const { zones: supabaseZones } = useRealtimeZones();
@@ -27,12 +38,68 @@ export default function VolunteerPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const submissionInFlight = useRef(false);
   const successTimer = useRef<number | undefined>(undefined);
+  const [now, setNow] = useState<number>(0);
 
-  useEffect(() => () => window.clearTimeout(successTimer.current), []);
+  useEffect(() => {
+    const initTimer = setTimeout(() => setNow(Date.now()), 0);
+    const timer = setInterval(() => setNow(Date.now()), 60000);
+    return () => {
+      window.clearTimeout(successTimer.current);
+      clearTimeout(initTimer);
+      clearInterval(timer);
+    };
+  }, []);
+
+  // Realtime Tasks logic
+  useEffect(() => {
+    const supabase = createClient();
+    
+    const fetchTasks = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      if (authData?.user) {
+        setUserId(authData.user.id);
+        
+        const { data, error } = await supabase
+          .from("tasks")
+          .select("*")
+          .or(`status.eq.pending,assigned_to.eq.${authData.user.id}`)
+          .neq("status", "completed");
+          
+        if (!error && data) {
+          setTasks(data as Task[]);
+        }
+      }
+    };
+
+    fetchTasks();
+
+    const channel = supabase.channel('volunteer-tasks')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => {
+        // Simple optimistic refresh on any change to tasks
+        fetchTasks();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const acceptTask = async (taskId: string) => {
+    if (!userId) return;
+    const supabase = createClient();
+    await supabase.from("tasks").update({ status: "active", assigned_to: userId }).eq("id", taskId);
+  };
+
+  const completeTask = async (taskId: string) => {
+    if (!userId) return;
+    const supabase = createClient();
+    await supabase.from("tasks").update({ status: "completed" }).eq("id", taskId);
+  };
 
   // Split tasks by status for the radar
-  const pendingTasks = Object.values(tasks).filter((t) => t.status === "pending");
-  const activeTasks = Object.values(tasks).filter((t) => t.status === "active");
+  const pendingTasks = tasks.filter((t) => t.status === "pending");
+  const activeTasks = tasks.filter((t) => t.status === "active" && t.assigned_to === userId);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -166,9 +233,14 @@ export default function VolunteerPage() {
 
             {/* Pending & Active Tasks */}
             <AnimatePresence>
-              {Object.values(tasks)
-                .filter((t) => t.status !== "completed")
-                .map((task) => (
+              {[...activeTasks, ...pendingTasks].map((task) => {
+                let timeStr = "Just now";
+                if (task.created_at && now > 0) {
+                  const diff = Math.floor((now - new Date(task.created_at).getTime()) / 60000);
+                  if (diff > 0) timeStr = `${diff}m ago`;
+                }
+                
+                return (
                   <motion.div
                     key={task.id}
                     layout
@@ -204,7 +276,7 @@ export default function VolunteerPage() {
                         className="text-xs font-medium text-text-tertiary"
                         style={{ fontFamily: "var(--font-data)" }}
                       >
-                        2m ago
+                        {timeStr}
                       </span>
                     </div>
 
@@ -222,7 +294,7 @@ export default function VolunteerPage() {
                       {task.status === "pending" ? (
                         <motion.button
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => acceptTask(task.id, "vol-1")}
+                          onClick={() => acceptTask(task.id)}
                           className={`w-full py-3 min-h-[48px] rounded-xl font-bold text-sm transition-colors ${
                             task.priority === "high"
                               ? "bg-state-danger hover:bg-state-danger/90 text-white shadow-elevation-1"
@@ -250,7 +322,8 @@ export default function VolunteerPage() {
                       )}
                     </div>
                   </motion.div>
-                ))}
+                );
+              })}
             </AnimatePresence>
           </motion.div>
         </div>

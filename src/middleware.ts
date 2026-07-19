@@ -141,24 +141,7 @@ export async function middleware(request: NextRequest) {
           .eq("id", user.id)
           .maybeSingle(),
       );
-      if (profile?.role) {
-        role = profile.role;
-      } else {
-        // Fallback for testing environments without profile setup
-        if (
-          user.email === "admin@aetheris.ai" ||
-          user.email === "testing_venue@aetheris.ai"
-        ) {
-          role = "venue_operator";
-        } else if (
-          user.email === "vol@aetheris.ai" ||
-          user.email === "testing_vol@aetheris.ai"
-        ) {
-          role = "volunteer";
-        } else if (user.email === "testing_fan@aetheris.ai") {
-          role = "fan";
-        }
-      }
+      role = profile?.role ?? null;
     } catch {
       // Fail closed: role remains null
     }

@@ -51,3 +51,5 @@ next-env.d.ts
 check-profiles.mjs
 create-user.mjs
 create-user2.mjs
+
+.vercel

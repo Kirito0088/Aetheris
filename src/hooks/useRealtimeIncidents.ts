@@ -76,6 +76,7 @@ export function useRealtimeIncidents() {
           event: "*",
           schema: "public",
           table: "incidents",
+          filter: "status=neq.resolved",
         },
         (payload) => {
           if (!isActive) return;
