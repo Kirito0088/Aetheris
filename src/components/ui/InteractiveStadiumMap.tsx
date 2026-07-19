@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useFanExperienceStore, type CrowdDensity, type StadiumZone } from "@/store/useFanExperienceStore";
 
 export function InteractiveStadiumMap() {
@@ -130,6 +130,15 @@ export function InteractiveStadiumMap() {
             onClick={() => !isDragging && setActiveZone('vip-lounge')}
           />
 
+          {/* East Concourse */}
+          <StadiumZonePath 
+            id="concourse-east" 
+            d="M600,200 C620,250 620,300 600,300 L550,280 C560,260 560,240 550,220 Z" 
+            zone={zones['concourse-east']}
+            isActive={activeZoneId === 'concourse-east'}
+            onClick={() => !isDragging && setActiveZone('concourse-east')}
+          />
+
           {/* Wayfinding Path (Animated) */}
           {activeZoneId === 'sector-104' && (
             <motion.path
@@ -160,14 +169,18 @@ export function InteractiveStadiumMap() {
       </motion.div>
 
       {/* Active Zone Info Panel */}
-      <motion.div 
-        className="absolute bottom-4 left-4 right-4 bg-surface-elevated/90 backdrop-blur-xl p-4 rounded-2xl border border-border-subtle shadow-elevation-3 origin-bottom"
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={activeZoneId ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95, pointerEvents: 'none' }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      >
+      <AnimatePresence mode="wait">
         {activeZoneId && zones[activeZoneId] && (
-          <div className="flex items-start justify-between">
+          <motion.div 
+            key={activeZoneId}
+            layoutId="fan-zone-info"
+            className="absolute bottom-4 left-4 right-4 bg-surface-elevated/90 backdrop-blur-xl p-4 rounded-2xl border border-border-subtle shadow-elevation-3 origin-bottom"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          >
+            <div className="flex items-start justify-between">
             <div>
               <h3 className="text-text-primary font-bold tracking-tight text-[length:var(--font-size-lg)]">
                 {zones[activeZoneId].name}
@@ -186,8 +199,9 @@ export function InteractiveStadiumMap() {
               </div>
             </div>
           </div>
+        </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

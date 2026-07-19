@@ -46,11 +46,12 @@ export function IncidentDrawer({ isOpen, onClose }: IncidentDrawerProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-text-primary/10 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-text-primary/8 backdrop-blur-sm z-[100]"
           />
 
           {/* Drawer */}
           <motion.div
+            layoutId="incident-drawer"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}

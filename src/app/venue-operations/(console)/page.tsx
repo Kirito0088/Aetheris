@@ -6,11 +6,13 @@ import { useRealtimeIncidents, useRealtimeZones } from "@/hooks";
 import { Users, AlertTriangle, ArrowUpRight, ArrowDownRight, Clock, ShieldCheck, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { IntelligencePanel } from "@/components/shared/IntelligencePanel";
 
 export default function VenueOperationsDashboard() {
   const { incidents, loading: incidentsLoading } = useRealtimeIncidents();
   const { zones, loading: zonesLoading } = useRealtimeZones();
   const [currentTime, setCurrentTime] = useState("--:--:--");
+  const [criticalZoneIds, setCriticalZoneIds] = useState<string[]>([]);
   const [resolvingId, setResolvingId] = useState<string | null>(null);
   const [optimisticallyResolvedIds, setOptimisticallyResolvedIds] = useState<Set<string>>(
     () => new Set(),
@@ -177,7 +179,7 @@ export default function VenueOperationsDashboard() {
             </div>
           </div>
           <div className="flex-1 min-h-[500px] xl:min-h-[700px] relative rounded-2xl overflow-hidden">
-            <UnifiedStadiumMap mode="operations" zones={zones} incidents={incidents} />
+            <UnifiedStadiumMap mode="operations" zones={zones} incidents={incidents} criticalZoneIds={criticalZoneIds} />
           </div>
         </section>
 
@@ -209,6 +211,15 @@ export default function VenueOperationsDashboard() {
               </div>
               <p className="text-[10px] text-text-tertiary font-mono uppercase mt-1">Total Venue</p>
             </div>
+          </div>
+
+          {/* AI Intelligence Panel */}
+          <div className="bg-surface-elevated rounded-2xl border border-border-subtle shadow-elevation-1 overflow-hidden">
+            <IntelligencePanel
+              zones={zones}
+              incidents={incidents}
+              onCriticalZonesChange={setCriticalZoneIds}
+            />
           </div>
 
           {/* Active Incidents */}

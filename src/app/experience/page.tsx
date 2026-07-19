@@ -1,107 +1,33 @@
-"use client";
+/**
+ * Aetheris Experience Selector Page
+ *
+ * Public role-selection gateway. No auth required to view this page —
+ * anyone clicking "Enter Aetheris" from the landing page lands here.
+ *
+ * Auth is enforced downstream: clicking a portal card navigates to
+ * /fan, /volunteer, or /venue-operations, where the middleware enforces
+ * login if the user is not authenticated.
+ *
+ * Architecture (ADR-002): Server Component by default. The interactive
+ * role cards are delegated to the ExperienceSelector client component.
+ */
 
-import React from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Users, ClipboardList, Settings, ArrowRight } from "lucide-react";
-import { useExperienceDirector, MOTION_EASINGS } from "@/features/experience";
+import { createClient } from "@/lib/supabase/server";
+import { ExperienceSelector } from "@/components/experience/ExperienceSelector";
 
-export default function ExperienceSelectorPage() {
-  const setRole = useExperienceDirector((s) => s.setRole);
+export default async function ExperiencePage() {
+  // Attempt to get the current user for a personalized greeting.
+  // This is best-effort only — the page renders for everyone regardless.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const handleSelect = (role: 'fan' | 'volunteer' | 'venue-operations') => {
-    setRole(role);
-    // Routing is handled natively by Link
-  };
+  const userName =
+    user?.user_metadata?.full_name ??
+    user?.user_metadata?.name ??
+    user?.email?.split("@")[0] ??
+    null;
 
-  const CARD_HOVER = {
-    rest: { scale: 1, y: 0 },
-    hover: { scale: 1.02, y: -4, transition: { duration: 0.25, ease: MOTION_EASINGS.decelerate } },
-  };
-
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--surface-base)] p-6">
-      <div className="w-full max-w-4xl space-y-12">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-            Choose Your Experience
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)]">
-            Select how you'll interact with the Stadium Intelligence Platform.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Fan */}
-          <Link href="/fan" className="block relative z-50" onClick={() => handleSelect('fan')}>
-            <motion.div
-              variants={CARD_HOVER}
-              initial="rest"
-              whileHover="hover"
-              className="group p-8 rounded-2xl cursor-pointer space-y-6 transition-colors border border-[var(--border-subtle)] bg-[var(--surface-elevated)]"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-50">
-                <Users className="w-6 h-6 text-blue-500" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[var(--text-primary)]">Fan</h3>
-                <p className="text-sm mt-2 leading-relaxed text-[var(--text-secondary)]">
-                  Navigate the stadium, find amenities, and get AI-guided directions. Mobile-first.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm font-semibold text-blue-500 group-hover:translate-x-1 transition-transform">
-                Enter as Fan <ArrowRight className="w-4 h-4" />
-              </div>
-            </motion.div>
-          </Link>
-
-          {/* Volunteer */}
-          <Link href="/volunteer" className="block relative z-50" onClick={() => handleSelect('volunteer')}>
-            <motion.div
-              variants={CARD_HOVER}
-              initial="rest"
-              whileHover="hover"
-              className="group p-8 rounded-2xl cursor-pointer space-y-6 transition-colors border border-[var(--border-subtle)] bg-[var(--surface-elevated)]"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-50">
-                <ClipboardList className="w-6 h-6 text-emerald-500" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[var(--text-primary)]">Volunteer</h3>
-                <p className="text-sm mt-2 leading-relaxed text-[var(--text-secondary)]">
-                  Receive intelligent task dispatch, assist fans, and translate in real-time.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm font-semibold text-emerald-500 group-hover:translate-x-1 transition-transform">
-                Enter as Volunteer <ArrowRight className="w-4 h-4" />
-              </div>
-            </motion.div>
-          </Link>
-
-          {/* Venue Operations */}
-          <Link href="/venue-operations" className="block relative z-50" onClick={() => handleSelect('venue-operations')}>
-            <motion.div
-              variants={CARD_HOVER}
-              initial="rest"
-              whileHover="hover"
-              className="group p-8 rounded-2xl cursor-pointer space-y-6 transition-colors border border-[var(--border-subtle)] bg-[var(--surface-elevated)]"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-50">
-                <Settings className="w-6 h-6 text-amber-500" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[var(--text-primary)]">Venue Operations</h3>
-                <p className="text-sm mt-2 leading-relaxed text-[var(--text-secondary)]">
-                  Full operational dashboard with crowd analytics, path planning, and dispatch.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm font-semibold text-amber-500 group-hover:translate-x-1 transition-transform">
-                Enter Venue Operations <ArrowRight className="w-4 h-4" />
-              </div>
-            </motion.div>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <ExperienceSelector userName={userName} />;
 }

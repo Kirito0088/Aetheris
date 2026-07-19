@@ -14,6 +14,7 @@ interface UnifiedStadiumMapProps {
   mode: 'fan' | 'volunteer' | 'operations';
   zones?: Tables<'zones'>[];
   incidents?: Tables<'incidents'>[];
+  criticalZoneIds?: string[];
 }
 
 // Map logical zones to SVG coordinates for zoom focusing
@@ -26,7 +27,7 @@ const ZONE_COORDINATES: Record<string, { x: number, y: number, scale: number }> 
 };
 
 export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStadiumMapProps>(
-  ({ mode, zones: zonesProp, incidents: incidentsProp }, ref) => {
+  ({ mode, zones: zonesProp, incidents: incidentsProp, criticalZoneIds = [] }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const storeData = useDatabaseStore();
 
@@ -164,27 +165,40 @@ export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStad
             {/* Render Zones Dynamically */}
             {zonesList.map(zone => {
               const isSelected = selectedZone === zone.id;
+              const isCritical = zone.crowdDensity === 'critical' || criticalZoneIds.includes(zone.id);
               const color = getZoneColor(zone);
               const pathData = getPathForZone(zone.id);
 
               return (
-                <motion.path
-                  key={zone.id}
-                  d={pathData}
-                  fill={color}
-                  fillOpacity={isSelected ? 0.3 : 0.08}
-                  stroke={isSelected ? 'var(--brand-blue)' : color}
-                  strokeWidth={isSelected ? 3 : 1.5}
-                  strokeOpacity={isSelected ? 1 : 0.6}
-                  whileHover={!isDragging ? { fillOpacity: 0.25 } : {}}
-                  onTap={() => {
-                    if (!isDragging && mode !== 'operations') {
-                      setSelectedZone(zone.id === selectedZone ? null : zone.id);
-                    }
-                  }}
-                  className={mode === 'operations' ? "cursor-default" : "cursor-pointer"}
-                  style={{ filter: isSelected ? 'url(#glow)' : 'none' }}
-                />
+                <React.Fragment key={zone.id}>
+                  {isCritical && (
+                    <motion.path
+                      d={pathData}
+                      fill="var(--state-danger)"
+                      stroke="var(--state-danger)"
+                      strokeWidth={3}
+                      animate={{ fillOpacity: [0.15, 0.35, 0.15] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                      style={{ pointerEvents: "none" }}
+                    />
+                  )}
+                  <motion.path
+                    d={pathData}
+                    fill={color}
+                    fillOpacity={isSelected ? 0.3 : 0.08}
+                    stroke={isCritical ? 'var(--state-danger)' : (isSelected ? 'var(--brand-blue)' : color)}
+                    strokeWidth={isCritical ? 2.5 : (isSelected ? 3 : 1.5)}
+                    strokeOpacity={isCritical ? 0.8 : (isSelected ? 1 : 0.6)}
+                    whileHover={!isDragging ? { fillOpacity: 0.25 } : {}}
+                    onTap={() => {
+                      if (!isDragging && mode !== 'operations') {
+                        setSelectedZone(zone.id === selectedZone ? null : zone.id);
+                      }
+                    }}
+                    className={mode === 'operations' ? "cursor-default" : "cursor-pointer"}
+                    style={{ filter: isSelected ? 'url(#glow)' : 'none' }}
+                  />
+                </React.Fragment>
               );
             })}
 
@@ -221,6 +235,7 @@ function getPathForZone(id: string): string {
     case 'south-gate': return "M300,500 C350,520 450,520 500,500 L460,440 C420,450 380,450 340,440 Z";
     case 'sector-104': return "M500,100 C580,180 580,420 500,500 L440,440 C480,380 480,220 440,160 Z";
     case 'vip-lounge': return "M300,100 C220,180 220,420 300,500 L360,440 C320,380 320,220 360,160 Z";
+    case 'concourse-east': return "M500,200 C520,250 520,350 500,400 L460,380 C470,330 470,270 460,220 Z";
     default: return "";
   }
 }

@@ -7,6 +7,7 @@ import { ArrowRight, MapPin, Ticket, Sparkles, Navigation } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { SmartWayfindingBanner } from "@/components/shared/SmartWayfindingBanner";
 
 export default function FanPage() {
   const { ticket, alerts, dismissAlert } = useFanExperienceStore();
@@ -32,6 +33,9 @@ export default function FanPage() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto relative min-h-screen">
       {/* Premium ambient glow background */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] md:w-[80%] h-[500px] bg-brand-blue/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+
+      {/* Smart Wayfinding — AI-powered navigation recommendation */}
+      <SmartWayfindingBanner fanSector={ticket.sector} fanGate={ticket.gate} />
 
       {/* Page Header */}
       <div className="flex justify-between items-start mb-8 mt-4 md:mt-0 flex-wrap gap-4">
