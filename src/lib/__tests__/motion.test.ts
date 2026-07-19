@@ -16,7 +16,6 @@ import {
   slideInFromRightVariants,
   scaleVariants,
   staggerContainerVariants,
-  staggerItemVariants,
   pageVariants,
   overlayVariants,
 } from "@/lib/motion";

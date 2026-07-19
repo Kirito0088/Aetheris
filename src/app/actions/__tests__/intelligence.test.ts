@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sanitizeInput } from "@/app/actions/intelligence";
+import { sanitizeInput } from "@/lib/sanitize";
 
 describe("sanitizeInput", () => {
   it("returns clean string unchanged", () => {
