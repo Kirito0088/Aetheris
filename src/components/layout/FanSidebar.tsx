@@ -34,9 +34,11 @@ export function FanSidebar() {
         transition={{ delay: 0.2, duration: 0.4 }}
         className="px-6 mb-12 flex items-center gap-3"
       >
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-blue to-brand-emerald flex items-center justify-center shadow-glow-blue">
-          <div className="w-3 h-3 bg-surface-elevated rounded-full" />
-        </div>
+        <img
+          src="/logo.png"
+          alt="Aetheris logo"
+          className="w-9 h-9 rounded-xl object-cover shadow-elevation-1"
+        />
         <div>
           <h1 className="text-[length:var(--font-size-base)] font-bold tracking-tight text-text-primary leading-tight">
             Aetheris

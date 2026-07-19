@@ -229,23 +229,16 @@ export default function FanLoginPage() {
           {/* Brand */}
           <motion.div variants={staggerItem} style={styles.brandBlock}>
             <div style={styles.logoMark}>
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <circle cx="16" cy="16" r="16" fill="var(--brand-blue)" />
-                <path
-                  d="M10 20L16 12L22 20"
-                  stroke="white"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <img
+                src="/logo.png"
+                alt="Aetheris logo"
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                }}
+              />
             </div>
             <h1 style={styles.wordmark}>Aetheris</h1>
           </motion.div>

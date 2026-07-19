@@ -1,19 +1,18 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, Map, Users, AlertTriangle } from "lucide-react";
-import clsx from "clsx";
-import { motion } from "framer-motion";
-import { MOTION_TIMINGS, MOTION_EASINGS } from "@/features/experience";
-import { SignOutButton } from "@/components/auth/SignOutButton";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
+import { motion } from 'framer-motion';
+import { MOTION_TIMINGS, MOTION_EASINGS } from '@/features/experience';
+import { SignOutButton } from '@/components/auth/SignOutButton';
+import { Home, Map, Users, AlertTriangle } from 'lucide-react';
 
 const venueOperationsItems = [
-  { name: "Dashboard", href: "/venue-operations", icon: Home },
-  { name: "Venue Guide", href: "/venue-operations/guide", icon: Map },
-  { name: "Dispatch", href: "/venue-operations/dispatch", icon: Users },
-  { name: "Incidents", href: "/venue-operations/incidents", icon: AlertTriangle },
+  { label: 'Dashboard', href: '/venue-operations', icon: Home },
+  { label: 'Venue Guide', href: '/venue-operations/guide', icon: Map },
+  { label: 'Dispatch', href: '/venue-operations/dispatch', icon: Users },
+  { label: 'Incidents', href: '/venue-operations/incidents', icon: AlertTriangle },
 ];
 
 const MotionLink = motion.create(Link);
@@ -22,103 +21,71 @@ export function Sidebar({ _persona }: { _persona?: 'venue-operations' }) {
   const pathname = usePathname();
 
   return (
-    <motion.aside 
-      initial={{ width: 0, opacity: 0 }}
-      animate={{ width: 256, opacity: 1 }}
-      transition={{ 
-        duration: MOTION_TIMINGS.hero / 1000, 
-        ease: MOTION_EASINGS.emphasized 
-      }}
-      className="h-full bg-surface-base/60 backdrop-blur-2xl border-r border-border-subtle flex flex-col pt-8 pb-4 overflow-hidden shrink-0 relative z-navigation"
-    >
-      <motion.div 
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: MOTION_TIMINGS.transition / 1000 }}
-        className="px-6 mb-10 flex items-center gap-3"
-      >
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-blue to-brand-emerald flex items-center justify-center shadow-glow-blue">
-          <div className="w-3 h-3 bg-surface-elevated rounded-full" />
-        </div>
+    <aside className="w-64 h-screen border-r border-stone-200/60 bg-[var(--stitch-surface)] flex flex-col py-8">
+      {/* Logo Area */}
+      <div className="px-8 mb-12 flex items-center gap-3">
+        <img
+          src="/logo.png"
+          alt="Aetheris logo"
+          className="w-10 h-10 rounded-lg object-cover shadow-sm"
+        />
         <div>
-          <h1 className="text-[length:var(--font-size-base)] font-semibold tracking-tight text-text-primary leading-tight">
+          <h1
+            className="text-lg font-bold text-[var(--stitch-on-surface)]"
+            style={{ fontFamily: 'var(--font-headline)' }}
+          >
             Aetheris
           </h1>
-          <p className="text-[length:var(--font-size-xs)] text-text-tertiary font-medium">Operations</p>
+          <span
+            className="text-[10px] uppercase tracking-wider text-[var(--stitch-on-surface-variant)] block"
+            style={{ fontFamily: 'var(--font-data)' }}
+          >
+            Operations
+          </span>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.nav 
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.04,
-              delayChildren: 0.1
-            }
-          }
-        }}
-        className="flex-1 px-3 space-y-1"
-      >
-        {venueOperationsItems.map((item) => {
-          const isActive = 
-            pathname === item.href || 
-            (item.href !== "/venue-operations" && pathname.startsWith(item.href));
+      {/* Nav Items */}
+      <nav className="flex flex-col flex-grow gap-2 px-4">
+        {venueOperationsItems.map((item, index) => {
+          const isActive =
+            item.href === '/venue-operations'
+              ? pathname === '/venue-operations'
+              : pathname.startsWith(item.href);
+          const Icon = item.icon;
 
           return (
             <MotionLink
-              key={item.name}
+              key={item.href}
               href={item.href}
-              variants={{
-                hidden: { opacity: 0, x: -8 },
-                visible: { 
-                  opacity: 1, 
-                  x: 0,
-                  transition: { duration: MOTION_TIMINGS.transition / 1000, ease: MOTION_EASINGS.decelerate }
-                }
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: MOTION_TIMINGS.transition / 1000,
+                ease: MOTION_EASINGS.emphasized,
+                delay: index * 0.06,
               }}
-              whileHover={{ scale: 0.98 }}
-              whileTap={{ scale: 0.96 }}
               className={clsx(
-                "relative flex items-center gap-3 px-3 py-2 rounded-md text-[length:var(--font-size-sm)] font-medium transition-colors duration-200 z-10",
-                isActive 
-                  ? "text-brand-blue"
-                  : "text-text-secondary hover:text-text-primary"
+                'relative flex items-center gap-4 px-4 py-3 rounded-r-full transition-colors',
+                isActive
+                  ? 'bg-[var(--stitch-secondary-container)] text-[var(--stitch-on-secondary-container)] font-semibold'
+                  : 'text-[var(--stitch-on-surface-variant)] hover:text-[var(--stitch-on-surface)] hover:bg-[var(--surface-sunken)]/50'
               )}
             >
-              {isActive && (
-                <motion.div
-                  layoutId="sidebar-active-indicator"
-                  className="absolute inset-0 bg-nav-selected rounded-md z-[-1]"
-                  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                />
-              )}
-              {/* Very subtle left accent line for Linear feel */}
-              {isActive && (
-                <motion.div 
-                  layoutId="sidebar-active-border"
-                  className="absolute left-0 top-1.5 bottom-1.5 w-[3px] bg-brand-blue rounded-r-full"
-                  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                />
-              )}
-              <item.icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 2} />
-              {item.name}
+              <Icon className="w-5 h-5 shrink-0" />
+              <span className="text-sm">{item.label}</span>
             </MotionLink>
           );
         })}
-      </motion.nav>
+      </nav>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: MOTION_TIMINGS.transition / 1000 }}
-        className="px-3 mt-auto"
-      >
-        <SignOutButton variant="sidebar" />
-      </motion.div>
-    </motion.aside>
+      {/* Bottom: Sign Out */}
+      <div className="px-4 mt-auto">
+        <div className="flex items-center gap-3 px-4 py-3">
+          <div className="w-8 h-8 rounded-full bg-[var(--surface-sunken)] shrink-0" />
+          <SignOutButton />
+        </div>
+      </div>
+    </aside>
   );
 }

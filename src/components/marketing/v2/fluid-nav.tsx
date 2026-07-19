@@ -21,6 +21,11 @@ export function FluidNav() {
         <div className="flex items-center gap-8 rounded-full border border-black/5 bg-white/70 px-4 py-2.5 backdrop-blur-2xl shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
           
           <div className="flex items-center gap-2 pl-2">
+            <img
+              src="/logo.png"
+              alt="Aetheris logo"
+              className="w-6 h-6 rounded-md object-cover"
+            />
             <span className="font-sans text-lg font-semibold tracking-tight text-[#111111]">
               Aetheris
             </span>

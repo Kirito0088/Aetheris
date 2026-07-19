@@ -510,3 +510,124 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* ============================================================================
+   STITCH DESIGN SYSTEM — Additive Tokens & Utilities
+   "Architectural Optimism" — Bento-grid, glassmorphism, editorial typography
+   ============================================================================ */
+
+@layer base {
+  :root {
+    /* --- STITCH FONT ALIASES (map to next/font CSS variables) --- */
+    --font-headline: var(--font-space-grotesk, "Space Grotesk"), system-ui, sans-serif;
+    --font-body: var(--font-inter, "Inter"), system-ui, sans-serif;
+    --font-data: var(--font-jetbrains-mono, "JetBrains Mono"), "Fira Code", monospace;
+
+    /* --- STITCH COLOR TOKENS (warm stone palette) --- */
+    --stitch-stone-200: #E5E5E2;
+    --stitch-stone-900: #1C1C1A;
+    --stitch-surface: #f9f9f8;
+    --stitch-surface-white: #FFFFFF;
+    --stitch-primary: #005ab3;
+    --stitch-primary-container: #0073e0;
+    --stitch-accent-red: #E63946;
+    --stitch-secondary: #525e7d;
+    --stitch-secondary-container: #cddafe;
+    --stitch-tertiary: #2e5e91;
+    --stitch-tertiary-container: #4977ab;
+    --stitch-on-surface: #1a1c1c;
+    --stitch-on-surface-variant: #414754;
+    --stitch-outline: #717786;
+    --stitch-outline-variant: #c0c6d6;
+    --stitch-primary-fixed: #d6e3ff;
+    --stitch-primary-fixed-dim: #aac7ff;
+    --stitch-secondary-fixed: #d9e2ff;
+    --stitch-secondary-fixed-dim: #b9c6e9;
+    --stitch-tertiary-fixed: #d2e4ff;
+    --stitch-tertiary-fixed-dim: #a0c9ff;
+    --stitch-on-primary-fixed: #001b3e;
+    --stitch-on-secondary-fixed: #0d1b36;
+    --stitch-on-tertiary-fixed: #001c37;
+    --stitch-error-container: #ffdad6;
+    --stitch-on-error-container: #93000a;
+
+    /* --- STITCH ELEVATION --- */
+    --stitch-hover-shadow: 0 24px 48px -12px rgba(28, 28, 26, 0.1);
+    --stitch-cinematic-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+/* --- BENTO CARD — Cornerstone component of Stitch design system --- */
+.bento-card {
+  background-color: var(--stitch-surface-white, #FFFFFF);
+  border: 1px solid rgba(229, 229, 226, 0.6);
+  border-radius: var(--radius-xl, 20px);
+  padding: 32px;
+  transition: box-shadow 0.5s var(--stitch-cinematic-ease),
+              transform 0.5s var(--stitch-cinematic-ease);
+}
+
+.bento-card:hover {
+  box-shadow: 0 4px 40px rgba(28, 28, 26, 0.04);
+}
+
+/* --- GLASS PANEL — Frosted glassmorphism overlay --- */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(229, 229, 226, 0.6);
+}
+
+/* --- STAGGER ANIMATION DELAYS (Stitch entrance choreography) --- */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* --- PULSE CRITICAL — for incident zone on map --- */
+@keyframes pulse-critical {
+  0%, 100% {
+    fill-opacity: 0.2;
+  }
+  50% {
+    fill-opacity: 0.4;
+  }
+}
+
+.pulse-critical {
+  animation: pulse-critical 2s ease-in-out infinite;
+}
+
+/* --- STITCH FADE-IN-UP — cinematic entrance animation --- */
+@keyframes stitch-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stitch-fade-in-up {
+  opacity: 0;
+  animation: stitch-fade-in-up 0.8s var(--stitch-cinematic-ease) forwards;
+}
+
+/* --- STITCH CUSTOM SCROLLBAR (thin, minimal) --- */
+.stitch-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.stitch-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stitch-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--stitch-stone-200, #E5E5E2);
+  border-radius: 10px;
+}
+

@@ -19,12 +19,28 @@ interface UnifiedStadiumMapProps {
 
 // Map logical zones to SVG coordinates for zoom focusing
 const ZONE_COORDINATES: Record<string, { x: number, y: number, scale: number }> = {
-  'north-gate': { x: -50, y: 100, scale: 2 },
-  'south-gate': { x: -50, y: -150, scale: 2 },
-  'sector-104': { x: -150, y: 0, scale: 2.2 },
-  'vip-lounge': { x: 150, y: 0, scale: 2.2 },
-  'concourse-east': { x: 0, y: 0, scale: 1.5 },
+  'north-gate': { x: 0, y: 100, scale: 2 },
+  'south-gate': { x: 0, y: -100, scale: 2 },
+  'sector-104': { x: -200, y: 0, scale: 2.2 },
+  'vip-lounge': { x: 200, y: 0, scale: 2.2 },
+  'concourse-east': { x: -150, y: 100, scale: 2 },
 };
+
+// Fixed incident marker positions per zone in the new SVG layout
+const INCIDENT_POSITIONS: Record<string, { cx: number, cy: number }> = {
+  'north-gate': { cx: 400, cy: 150 },
+  'south-gate': { cx: 400, cy: 450 },
+  'sector-104': { cx: 630, cy: 300 },
+  'vip-lounge': { cx: 170, cy: 300 },
+  'concourse-east': { cx: 600, cy: 170 },
+};
+
+// Telemetry sensor positions (operations mode)
+const SENSOR_POSITIONS = [
+  { cx: 300, cy: 150 },
+  { cx: 500, cy: 150 },
+  { cx: 300, cy: 450 },
+];
 
 export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStadiumMapProps>(
   ({ mode, zones: zonesProp, incidents: incidentsProp, criticalZoneIds = [] }, ref) => {
@@ -133,6 +149,18 @@ export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStad
           </button>
         </div>
 
+        {/* Floating Legend Overlay */}
+        <div className="absolute bottom-4 right-4 z-20 glass-panel px-3 py-2 rounded-xl flex flex-col gap-1.5">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--stitch-accent-red)]" />
+            <span className="font-data text-xs text-text-secondary">Critical Incident</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--brand-blue)]" />
+            <span className="font-data text-xs text-text-secondary">Active Sensor</span>
+          </div>
+        </div>
+
         {/* Map Container */}
         <motion.div
           ref={containerRef}
@@ -145,22 +173,30 @@ export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStad
           onDragEnd={() => setTimeout(() => setIsDragging(false), 100)}
           whileTap={{ cursor: "grabbing" }}
         >
-          {/* SVG Map: Clean, Architectural 2D Style */}
-          <svg viewBox="0 0 800 600" className="w-full h-full max-w-[800px] drop-shadow-sm" style={{ overflow: 'visible' }}>
+          {/* SVG Map: Stitch Elliptical Venue Design */}
+          <svg viewBox="0 0 800 600" className="w-full h-full max-w-[800px] drop-shadow-2xl opacity-90" style={{ overflow: 'visible' }}>
             <defs>
+              {/* Glow filter for selected zones */}
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="8" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
+              {/* Pitch gradient */}
+              <linearGradient id="pitchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f0f2f0" />
+                <stop offset="100%" stopColor="#e2e6e2" />
+              </linearGradient>
             </defs>
 
-            {/* Stadium Outer Ring */}
-            <rect x="200" y="100" width="400" height="400" rx="200" fill="var(--surface-sunken)" stroke="var(--border-strong)" strokeWidth="1.5" />
-            
-            {/* Pitch */}
-            <rect x="330" y="220" width="140" height="160" rx="12" fill="var(--surface-base)" stroke="var(--border-strong)" strokeWidth="1.5" />
-            <circle cx="400" cy="300" r="25" fill="none" stroke="var(--border-strong)" strokeWidth="1.5" />
-            <line x1="330" y1="300" x2="470" y2="300" stroke="var(--border-strong)" strokeWidth="1.5" />
+            {/* Outer Perimeter */}
+            <ellipse cx="400" cy="300" rx="350" ry="280" fill="none" stroke="#e5e5e2" strokeWidth="2" />
+            <ellipse cx="400" cy="300" rx="320" ry="250" fill="#f9f9f8" stroke="#d4d4d2" strokeWidth="1" />
+
+            {/* VIP Corner Wedges (static decorative) */}
+            <path d="M 150 200 L 250 120 L 280 180 L 220 230 Z" fill="var(--surface-sunken)" stroke="var(--stitch-outline-variant)" strokeWidth="1" />
+            <path d="M 650 200 L 550 120 L 520 180 L 580 230 Z" fill="var(--surface-sunken)" stroke="var(--stitch-outline-variant)" strokeWidth="1" />
+            <path d="M 150 400 L 250 480 L 280 420 L 220 370 Z" fill="var(--surface-sunken)" stroke="var(--stitch-outline-variant)" strokeWidth="1" />
+            <path d="M 650 400 L 550 480 L 520 420 L 580 370 Z" fill="var(--surface-sunken)" stroke="var(--stitch-outline-variant)" strokeWidth="1" />
 
             {/* Render Zones Dynamically */}
             {zonesList.map(zone => {
@@ -202,20 +238,44 @@ export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStad
               );
             })}
 
-            {/* Render Incidents (Operations Mode Only) */}
+            {/* Field / Pitch with markings */}
+            <rect x="250" y="200" width="300" height="200" rx="10" fill="url(#pitchGrad)" stroke="var(--stitch-outline-variant)" strokeWidth="2" />
+            {/* Center line */}
+            <line x1="400" y1="200" x2="400" y2="400" stroke="#ffffff" strokeWidth="2" opacity="0.8" />
+            {/* Center circle */}
+            <circle cx="400" cy="300" r="40" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.8" />
+            {/* Left penalty box */}
+            <rect x="250" y="250" width="50" height="100" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.8" />
+            {/* Right penalty box */}
+            <rect x="500" y="250" width="50" height="100" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.8" />
+
+            {/* Telemetry Nodes (Operations mode) */}
+            {mode === 'operations' && SENSOR_POSITIONS.map((pos, i) => (
+              <motion.circle
+                key={`sensor-${i}`}
+                cx={pos.cx}
+                cy={pos.cy}
+                r={6}
+                fill="var(--brand-blue)"
+                opacity={0.8}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', delay: i * 0.1 }}
+              />
+            ))}
+
+            {/* Render Incidents */}
             {mode === 'operations' && incidentsList.map(inc => {
               if (inc.status === 'resolved') return null;
-              const coords = ZONE_COORDINATES[inc.locationZoneId];
-              if (!coords) return null;
-              
-              // Reverse mapping coordinates for visual placement
-              const cx = 400 - coords.x;
-              const cy = 300 - coords.y;
+              const pos = INCIDENT_POSITIONS[inc.locationZoneId];
+              if (!pos) return null;
 
               return (
                 <motion.g key={inc.id} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                  <circle cx={cx} cy={cy} r="20" fill="var(--state-danger)" fillOpacity="0.2" className="animate-ping" />
-                  <circle cx={cx} cy={cy} r="8" fill="var(--state-danger)" />
+                  {/* Ping animation ring */}
+                  <circle cx={pos.cx} cy={pos.cy} r="16" fill="var(--stitch-accent-red)" fillOpacity="0.2" className="animate-ping" />
+                  {/* Solid core */}
+                  <circle cx={pos.cx} cy={pos.cy} r="8" fill="var(--stitch-accent-red)" />
                 </motion.g>
               );
             })}
@@ -228,14 +288,14 @@ export const UnifiedStadiumMap = forwardRef<UnifiedStadiumMapHandle, UnifiedStad
 
 UnifiedStadiumMap.displayName = 'UnifiedStadiumMap';
 
-// SVG Path helper
+// SVG Path helper – Stitch elliptical venue paths
 function getPathForZone(id: string): string {
   switch(id) {
-    case 'north-gate': return "M300,100 C350,80 450,80 500,100 L460,160 C420,150 380,150 340,160 Z";
-    case 'south-gate': return "M300,500 C350,520 450,520 500,500 L460,440 C420,450 380,450 340,440 Z";
-    case 'sector-104': return "M500,100 C580,180 580,420 500,500 L440,440 C480,380 480,220 440,160 Z";
-    case 'vip-lounge': return "M300,100 C220,180 220,420 300,500 L360,440 C320,380 320,220 360,160 Z";
-    case 'concourse-east': return "M500,200 C520,250 520,350 500,400 L460,380 C470,330 470,270 460,220 Z";
+    case 'north-gate': return "M 250 120 C 350 70 450 70 550 120 L 520 180 C 440 140 360 140 280 180 Z";
+    case 'south-gate': return "M 250 480 C 350 530 450 530 550 480 L 520 420 C 440 460 360 460 280 420 Z";
+    case 'sector-104': return "M 650 200 C 700 270 700 330 650 400 L 580 370 C 620 320 620 280 580 230 Z";
+    case 'vip-lounge': return "M 150 200 C 100 270 100 330 150 400 L 220 370 C 180 320 180 280 220 230 Z";
+    case 'concourse-east': return "M 650 200 L 550 120 L 520 180 L 580 230 Z";
     default: return "";
   }
 }

@@ -13,7 +13,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/* Navigation items per persona — max 4 to leave room for the sign-out item. */
+/* Navigation items per persona — optimized for mobile touch targets (48px+) */
 const NAV_CONFIGS: Record<string, { href: string; icon: typeof Home; label: string }[]> = {
   fan: [
     { href: "/fan", icon: Home, label: "Home" },
@@ -22,7 +22,7 @@ const NAV_CONFIGS: Record<string, { href: string; icon: typeof Home; label: stri
     { href: "/fan/guide", icon: Compass, label: "Guide" },
   ],
   volunteer: [
-    { href: "/volunteer", icon: Home, label: "Home" },
+    { href: "/volunteer", icon: Home, label: "Radar" },
     { href: "/volunteer/guide", icon: BookOpen, label: "Guide" },
     { href: "/volunteer/translate", icon: Compass, label: "Translate" },
   ],
@@ -34,8 +34,11 @@ export function BottomNav({ persona = "fan" }: { persona?: string }) {
   const basePath = persona === "volunteer" ? "/volunteer" : "/fan";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2 bg-gradient-to-t from-surface-base via-surface-base/80 to-transparent pointer-events-none md:hidden">
-      <nav aria-label={`${persona} portal`} className="mx-auto max-w-md flex items-center justify-around bg-surface-glass-strong backdrop-blur-xl border border-border-subtle shadow-elevation-2 rounded-full px-2 py-2 pointer-events-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2 bg-gradient-to-t from-[var(--surface-base)] via-[var(--surface-base)]/90 to-transparent pointer-events-none md:hidden">
+      <nav
+        aria-label={`${persona} mobile navigation`}
+        className="mx-auto max-w-md flex items-center justify-between bg-[var(--surface-glass-strong)] backdrop-blur-2xl border border-[var(--border-subtle)] shadow-[0_12px_36px_rgba(0,0,0,0.12)] rounded-full px-3 py-1.5 pointer-events-auto ring-1 ring-black/5"
+      >
         {navItems.map((item) => {
           const isActive =
             pathname === item.href ||
@@ -48,30 +51,35 @@ export function BottomNav({ persona = "fan" }: { persona?: string }) {
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               aria-label={item.label}
-              className="relative flex flex-col items-center justify-center w-14 h-12"
+              className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[48px] px-2 py-1 transition-transform active:scale-95"
             >
-              {/* Active Bubble (Framer Motion Layout ID) */}
+              {/* Active Bubble (Spring physics animation) */}
               {isActive && (
                 <motion.div
-                  layoutId="bottomNavBubble"
-                  className="absolute inset-0 bg-nav-selected rounded-full"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  layoutId="bottomNavActiveBubble"
+                  className="absolute inset-0 bg-[var(--nav-selected)] rounded-full"
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
                 />
               )}
 
-              <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+              <div className="relative z-10 flex flex-col items-center justify-center gap-0.5">
                 <Icon
                   className={cn(
-                    "w-5 h-5 transition-colors duration-300",
-                    isActive ? "text-nav-active" : "text-text-tertiary group-hover:text-text-secondary"
+                    "w-5 h-5 transition-colors duration-200",
+                    isActive
+                      ? "text-[var(--brand-blue)]"
+                      : "text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)]"
                   )}
                   strokeWidth={isActive ? 2.5 : 2}
                 />
                 <span
                   className={cn(
-                    "text-[10px] font-medium tracking-tight transition-all duration-300",
-                    isActive ? "text-nav-active opacity-100" : "text-text-tertiary opacity-0 h-0"
+                    "text-[10px] font-bold tracking-tight transition-all duration-200",
+                    isActive
+                      ? "text-[var(--brand-blue)] opacity-100"
+                      : "text-[var(--text-tertiary)] opacity-80"
                   )}
+                  style={{ fontFamily: "var(--font-data)" }}
                 >
                   {item.label}
                 </span>
@@ -80,8 +88,10 @@ export function BottomNav({ persona = "fan" }: { persona?: string }) {
           );
         })}
 
-        {/* Sign-Out — always the last item */}
-        <SignOutButton variant="nav" />
+        {/* Sign-Out Button — always accessible on mobile */}
+        <div className="flex items-center justify-center min-w-[48px] min-h-[48px]">
+          <SignOutButton variant="nav" />
+        </div>
       </nav>
     </div>
   );

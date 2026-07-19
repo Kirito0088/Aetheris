@@ -14,7 +14,14 @@
  */
 
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Playfair_Display,
+  Space_Grotesk,
+  Inter,
+  JetBrains_Mono,
+} from "next/font/google";
 import { Providers } from "@/providers";
 import "@/styles/globals.css";
 
@@ -43,6 +50,28 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
+// Stitch Design System Fonts — "Architectural Optimism" typography triad
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space-grotesk",
+  weight: ["500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  weight: ["400", "500", "600"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+  weight: ["500", "700"],
+});
+
 // =============================================================================
 // METADATA
 // =============================================================================
@@ -54,6 +83,13 @@ export const metadata: Metadata = {
   },
   description:
     "Aetheris is the official operational intelligence platform for FIFA World Cup 2026. The invisible nervous system protecting and orchestrating humanity's largest event.",
+  icons: {
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+  },
   keywords: [
     "stadium intelligence",
     "spatial intelligence",
@@ -89,7 +125,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable} ${playfair.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${playfair.variable} ${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         <Providers>{children}</Providers>

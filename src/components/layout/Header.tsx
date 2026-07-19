@@ -1,58 +1,75 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Volume2, VolumeX } from "lucide-react";
-import { useExperienceDirector, MOTION_TIMINGS, MOTION_EASINGS } from "@/features/experience";
-import { SignOutButton } from "@/components/auth/SignOutButton";
+import { motion } from 'framer-motion';
+import { useExperienceDirector, MOTION_TIMINGS, MOTION_EASINGS } from '@/features/experience';
+import { SignOutButton } from '@/components/auth/SignOutButton';
+import { Volume2, VolumeX, ChevronRight } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
 }
 
 export function Header({ title }: HeaderProps) {
-  const audioEnabled = useExperienceDirector((s) => s.audioEnabled);
-  const setAudioEnabled = useExperienceDirector((s) => s.setAudioEnabled);
-  
+  const { audioEnabled, setAudioEnabled } = useExperienceDirector();
+
   return (
-    <motion.header 
-      initial={{ y: -64, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ 
-        duration: MOTION_TIMINGS.transition / 1000, 
-        ease: MOTION_EASINGS.decelerate,
-        delay: 0.1
+    <motion.header
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: MOTION_TIMINGS.transition / 1000,
+        ease: MOTION_EASINGS.emphasized,
       }}
-      className="h-14 flex items-center justify-between px-6 border-b border-border-subtle bg-surface-base/80 backdrop-blur-md shrink-0 z-navigation sticky top-0"
+      className="sticky top-0 z-40 h-16 border-b border-stone-200/60 bg-[var(--stitch-surface)]/80 backdrop-blur-md flex items-center justify-between px-6"
     >
-      <div className="flex items-center gap-2 text-[length:var(--font-size-sm)] font-medium">
-        <span className="text-text-secondary hover:text-text-primary transition-colors cursor-pointer px-2 py-1 -ml-2 rounded-md hover:bg-surface-sunken">
+      {/* Left: Breadcrumb */}
+      <div className="flex items-center gap-3">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ZsHYGgiNNca6i-_lTLXk75iUHKDyT_L6uxz3-jijWyKosiKgA3oAye6acNjDjHc8hwsBFEIyZQ8W3xWoyVsSP5iEdSf8lBubxjJwxpcn_VxBBh2dPXkwY43wWlzjJzbX9Sy41lXfAvK9FAmlBk6xsNdzyFO6UmXaxe5XhSH5OOP6XY-Jpw6TnT8yXM6yjUvWbys5LWqsoPnnO5MOLfVKKNDiH4-PQtXKUKJhf26YkX2SHl4RvgmBLU_aJ9BRgkk3mw"
+          alt="Venue"
+          className="w-6 h-6 rounded-md object-cover"
+        />
+        <span
+          className="text-sm text-[var(--stitch-on-surface-variant)]"
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
           Estadio Azteca
         </span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-text-tertiary">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
-        <span className="text-text-primary px-2 py-1 rounded-md">
+        <ChevronRight className="w-4 h-4 text-[var(--stitch-on-surface-variant)]" />
+        <span
+          className="text-sm font-semibold text-[var(--stitch-primary)]"
+        >
           {title}
         </span>
       </div>
 
+      {/* Right: Controls */}
       <div className="flex items-center gap-3">
+        {/* Audio Toggle */}
         <button
           onClick={() => setAudioEnabled(!audioEnabled)}
-          className="flex items-center justify-center w-8 h-8 rounded-md border border-border-subtle bg-surface-elevated shadow-elevation-1 hover:bg-surface-sunken hover:border-border-strong text-text-secondary hover:text-text-primary transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+          className="w-10 h-10 rounded-full border border-stone-200/60 flex items-center justify-center text-[var(--stitch-on-surface-variant)] hover:text-[var(--stitch-on-surface)] hover:bg-[var(--surface-sunken)]/50 transition-colors"
+          aria-label={audioEnabled ? 'Mute audio' : 'Enable audio'}
         >
-          {audioEnabled ? <Volume2 className="w-[18px] h-[18px] text-brand-blue" /> : <VolumeX className="w-[18px] h-[18px]" />}
+          {audioEnabled ? (
+            <Volume2 className="w-5 h-5" />
+          ) : (
+            <VolumeX className="w-5 h-5" />
+          )}
         </button>
 
-        <SignOutButton variant="header" />
-
-        <div className="flex items-center gap-2 h-8 px-3 rounded-md bg-state-success/10 border border-state-success/20 text-state-success">
-          <span className="w-2 h-2 rounded-full bg-state-success animate-pulse" />
-          <span className="text-[length:var(--font-size-xs)] font-semibold tracking-wide uppercase">
-            Live
+        {/* LIVE Indicator */}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-200/60 bg-emerald-50/50">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span
+            className="text-xs uppercase tracking-wider text-emerald-700 font-medium"
+            style={{ fontFamily: 'var(--font-data)', fontSize: '12px' }}
+          >
+            LIVE
           </span>
         </div>
+
+        <SignOutButton />
       </div>
     </motion.header>
   );
